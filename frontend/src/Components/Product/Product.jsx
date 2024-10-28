@@ -20,7 +20,9 @@ const Product = ({ product }) => {
                         </div>
                     </div>
                         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="/product/${product._id}">View options</a>
+                            <div class="text-center"><Link to={`/product/${product._id}`} id="view_btn" className="btn btn-block">
+            View Details
+          </Link>
                             </div>
                         </div>
             </div>

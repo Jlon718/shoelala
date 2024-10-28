@@ -59,8 +59,9 @@
             required: [true, 'Please select category for this product'],
         },
         brand: {
-            type: String,
-            required: [true, 'Please enter product brand']
+            type:  mongoose.Schema.ObjectId,
+            ref: 'Brand',
+            required: [true, 'Please select product brand']
         },
         seller: {
             type: mongoose.Schema.ObjectId,
