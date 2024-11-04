@@ -15,7 +15,8 @@ function App() {
       <Header />
         <Routes>
           <Route path="/" element={<Home />} exact="true" />
-          <Route path="/product/:id" element = {<ProductDetails />} exact="true" />
+          <Route path="/product/:id" element={<ProductDetails />} exact="true" />
+          <Route path="/search/:keyword" element={<Home />} exact="true" />
         </Routes>
       </Router>
       <Footer />
