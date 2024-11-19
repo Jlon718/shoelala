@@ -6,9 +6,11 @@ import { useParams, useNavigate } from 'react-router-dom'
 import Pagination from 'react-js-pagination'
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
+import Loader from './Layout/Loader'
 
 
 const Home = () => {
+    const [loading, setLoading] = useState(true)
     const [products, setProducts] = useState([])
     const [productsCount, setProductsCount] = useState(0)
     const [currentPage, setCurrentPage] = useState(1)
@@ -50,6 +52,7 @@ const Home = () => {
         setResPerPage(res.data.resPerPage)
         setProductsCount(res.data.count)
         setFilteredProductsCount(res.data.filteredProductsCount)
+        setLoading(false)
 
     }
 
@@ -69,7 +72,7 @@ const Home = () => {
     return (
         <>
             <MetaData title={'Buy Best Products Online'} />
-            <div className="container container-fluid">
+            {loading ? <Loader /> : (<div className="container container-fluid">
                 <h1 id="products_heading">Latest Products</h1>
                 <section class="py-5">
                     <div class="container px-4 px-lg-5 mt-5">
@@ -95,7 +98,7 @@ const Home = () => {
                                 linkClass="page-link"
                             />
                         </div>)}
-            </div>
+            </div>)}
         </>
 
     )
