@@ -1,17 +1,21 @@
-import React, { Fragment, useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
-import MetaData from '../Layout/MetaData';
-import CheckoutSteps from './CheckoutSteps';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getToken } from '../../utils/helpers';
+import MetaData from '../Layout/MetaData';
+import Loader from '../Layout/Loader';
+import CheckoutSteps from './CheckoutSteps';
 
-const Payment = ({ cartItems, shippingInfo }) => {
+const Payment = ({ cartItems }) => {
+    const location = useLocation();
+    const { shippingInfo } = location.state || {};
     const [loading, setLoading] = useState(true);
     let navigate = useNavigate();
 
     useEffect(() => {
+        setLoading(false);
     }, []);
 
     const order = {
@@ -29,38 +33,29 @@ const Payment = ({ cartItems, shippingInfo }) => {
 
     const createOrder = async (order) => {
         try {
+            const token = getToken();
             const config = {
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getToken()}`
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
                 }
             };
-            const response = await axios.post(`${import.meta.env.VITE_API}/order/new`, order, config);
-            setLoading(false);
-            if (response && response.data) {
-                toast.success('Order created', {
-                    position: 'bottom-right'
-                });
-                navigate('/success');
-            } else {
-                throw new Error('Failed to create order');
-            }
+            const { data } = await axios.post(`${import.meta.env.VITE_API}/order/new`, order, config);
+            navigate('/success');
         } catch (error) {
-            setLoading(false);
-            toast.error(error.response?.data?.message || error.message, {
-                position: 'bottom-right'
-            });
+            console.error('Error creating order:', error);
+            toast.error('Error creating order');
         }
     };
 
-    const submitHandler = async (e) => {
+    const submitHandler = (e) => {
         e.preventDefault();
-        order.paymentInfo = {
-            id: 'COD',
-            status: 'pending'
-        };
         createOrder(order);
     };
+
+    if (loading) {
+        return <Loader />;
+    }
 
     return (
         <>

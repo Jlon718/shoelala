@@ -19,6 +19,9 @@ import OrderSuccess from './Components/Cart/OrderSuccess';
 import axios from 'axios';
 import ProtectedRoute from './Components/Route/ProtectedRoute';
 import Dashboard from './Components/Admin/Dashboard';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function App() {
   const [state, setState] = useState({
