@@ -18,7 +18,7 @@ const Cart = ({cartItems, addItemToCart, removeItemFromCart}) => {
         removeItemFromCart(id)
     }
     const checkoutHandler = () => {
-        navigate('/login?redirect=shipping')
+        navigate('/shipping')
     }
     localStorage.setItem('cartItems', JSON.stringify(cartItems))
     return (

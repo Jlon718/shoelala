@@ -1,26 +1,31 @@
-const Shipping = ({ shipping, saveShippingInfo }) => {
-    const countriesList = Object.values(countries)
-    const [address, setAddress] = useState(shipping.address)
-    const [city, setCity] = useState(shipping.city)
-    const [postalCode, setPostalCode] = useState(shipping.postalCode)
-    const [phoneNo, setPhoneNo] = useState(shipping.phoneNo)
-    const [country, setCountry] = useState(shipping.country)
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { countries } from 'countries-list';
+import MetaData from '../Layout/MetaData';
+import CheckoutSteps from './CheckoutSteps';
+
+const Shipping = ({ shipping = {}, saveShippingInfo }) => {
+    const countriesList = Object.values(countries);
+    const [address, setAddress] = useState(shipping.address || '');
+    const [city, setCity] = useState(shipping.city || '');
+    const [postalCode, setPostalCode] = useState(shipping.postalCode || '');
+    const [phoneNo, setPhoneNo] = useState(shipping.phoneNo || '');
+    const [country, setCountry] = useState(shipping.country || '');
     let navigate = useNavigate();
+
     const submitHandler = (e) => {
-        e.preventDefault()
-        saveShippingInfo({ address, city, phoneNo, postalCode, country })
-        navigate('/confirm')
+        e.preventDefault();
+        saveShippingInfo({ address, city, phoneNo, postalCode, country });
+        navigate('/confirm-order');
     }
+
     return (
         <>
             <MetaData title={'Shipping Info'} />
             <CheckoutSteps shipping />
             <div className="row wrapper">
                 <div className="col-10 col-lg-5">
-                    <form
-                        className="shadow-lg"
-                        onSubmit={submitHandler}
-                    >
+                    <form className="shadow-lg" onSubmit={submitHandler}>
                         <h1 className="mb-4">Shipping Info</h1>
                         <div className="form-group">
                             <label htmlFor="address_field">Address</label>
@@ -58,7 +63,7 @@ const Shipping = ({ shipping, saveShippingInfo }) => {
                         <div className="form-group">
                             <label htmlFor="postal_code_field">Postal Code</label>
                             <input
-                                type="number"
+                                type="text"
                                 id="postal_code_field"
                                 className="form-control"
                                 value={postalCode}
@@ -87,12 +92,13 @@ const Shipping = ({ shipping, saveShippingInfo }) => {
                             type="submit"
                             className="btn btn-block py-3"
                         >
-                            CONTINUE
+                            Continue
                         </button>
                     </form>
                 </div>
             </div>
         </>
-    )
+    );
 }
-export default Shipping
+
+export default Shipping;
