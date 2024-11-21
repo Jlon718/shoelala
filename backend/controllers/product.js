@@ -1,80 +1,121 @@
-const Product = require('../models/product')
-const APIFeatures = require('../utils/apiFeatures');
+const Product = require('../models/product');
 
-
+// Get all products
 exports.getProducts = async (req, res, next) => {
-	// const products = await Product.find();
-	console.log(req.query)
-	const resPerPage = 8;
-	const productsCount = await Product.countDocuments();
-	const apiFeatures = new APIFeatures(Product.find(), req.query).search().filter()
-	apiFeatures.pagination(resPerPage);
-	const products = await apiFeatures.query;
+    try {
+        const products = await Product.find();
+        res.status(200).json({
+            success: true,
+            products
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Server Error'
+        });
+    }
+};
 
-	let filteredProductsCount = products.length;
-	if (!products)
-		return res.status(400).json({ message: 'error loading products' })
-	return res.status(200).json({
-		success: true,
-		count: products.length,
-		products,
-		resPerPage,
-		filteredProductsCount,
-		productsCount
-	})
-}
-
+// Get single product
 exports.getSingleProduct = async (req, res, next) => {
-	const product = await Product.findById(req.params.id);
-	if (!product) {
-		return res.status(404).json({
-			success: false,
-			message: 'Product not found'
-		})
-	}
-	return res.status(200).json({
-		success: true,
-		product
-	})
-}
+    try {
+        const product = await Product.findById(req.params.id);
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found'
+            });
+        }
+        res.status(200).json({
+            success: true,
+            product
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Server Error'
+        });
+    }
+};
 
+// Create new product
 exports.newProduct = async (req, res, next) => {
-    const product = await Product.create(req.body);
-    res.status(201).json({
-        success: true,
-        product
-    });
+    try {
+        const product = await Product.create(req.body);
+        res.status(201).json({
+            success: true,
+            product
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Server Error'
+        });
+    }
 };
 
+// Update product
 exports.updateProduct = async (req, res, next) => {
-    let product = await Product.findById(req.params.id);
-    if (!product) {
-        return res.status(404).json({
+    try {
+        let product = await Product.findById(req.params.id);
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found'
+            });
+        }
+        product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true
+        });
+        res.status(200).json({
+            success: true,
+            product
+        });
+    } catch (error) {
+        res.status(500).json({
             success: false,
-            message: 'Product not found'
+            message: 'Server Error'
         });
     }
-    product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-        runValidators: true
-    });
-    res.status(200).json({
-        success: true,
-        product
-    });
 };
 
+// Delete product
 exports.deleteProduct = async (req, res, next) => {
-    const product = await Product.findById(req.params.id);
-    if (!product) {
-        return res.status(404).json({
+    try {
+        const product = await Product.findById(req.params.id);
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found'
+            });
+        }
+        await product.remove();
+        res.status(200).json({
+            success: true,
+            message: 'Product deleted'
+        });
+    } catch (error) {
+        res.status(500).json({
             success: false,
-            message: 'Product not found'
+            message: 'Server Error'
         });
     }
-    await product.remove();
-    res.status(200).json({
-        success: true,
-        message: 'Product is deleted'
-    });
+};
+
+// Bulk delete products
+exports.bulkDeleteProducts = async (req, res, next) => {
+    try {
+        const { ids } = req.body;
+        await Product.deleteMany({ _id: { $in: ids } });
+        res.status(200).json({
+            success: true,
+            message: 'Products deleted'
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Server Error'
+        });
+    }
 };
