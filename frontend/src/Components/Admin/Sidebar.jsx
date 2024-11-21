@@ -29,6 +29,9 @@ const Sidebar = () => {
                     <li>
                         <Link to="/admin/reviews"><i className="fa fa-star"></i> Reviews</Link>
                     </li>
+                    <li>
+                        <Link to="/admin/charts"><i className="fa fa-star"></i> Charts</Link>
+                    </li>
                 </ul>
             </nav>
         </div>

@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 // import UserSalesChart from './UserSalesChart';
 // import MonthlySalesChart from './MonthlySalesChart';
-// import ProductSalesChart from './ProductSalesChart';
+import ProductSalesChart from './ProductSalesChart';
 const Dashboard = () => {
     const [products, setProducts] = useState([])
     const [error, setError] = useState('')
@@ -156,10 +156,10 @@ console.log(allOrders.length, allUsers.length)
                         {/* <UserSalesChart /> */}
                     </>
                     <>
-                        {/* <MonthlySalesChart /> */}
+                        {/* <MonthlySalesChart />  */}
                     </>
                     <>
-                        {/* <ProductSalesChart /> */}
+                        <ProductSalesChart /> 
                     </>
                 </div>
             </div>
