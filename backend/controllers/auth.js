@@ -44,29 +44,33 @@ exports.registerUser = async (req, res, next) => {
 
 exports.loginUser = async (req, res, next) => {
     const { email, password } = req.body;
+
     // Checks if email and password is entered by user
     if (!email || !password) {
-        return res.status(400).json({ error: 'Please enter email & password' })
+        return res.status(400).json({ error: 'Please enter email & password' });
     }
-  
+
     // Finding user in database
-    // const userPass = await User.findOne({ email }).select('+password')
-    let user = await User.findOne({ email }).select('+password')
+    let user = await User.findOne({ email }).select('+password');
     if (!user) {
-        return res.status(401).json({ message: 'Invalid Email or Password' })
+        return res.status(401).json({ message: 'Invalid Email or Password' });
     }
-   
+
     // Checks if password is correct or not
     const isPasswordMatched = await user.comparePassword(password);
-   
     if (!isPasswordMatched) {
-        return res.status(401).json({ message: 'Invalid Email or Password' })
+        return res.status(401).json({ message: 'Invalid Email or Password' });
     }
+
+    // Generate JWT token
     const token = user.getJwtToken();
-     return res.status(201).json({
-     	success:true,
-     	token
-     });
-    //  user = await User.findOne({ email })
-    // sendToken(user, 200, res)
-}
+
+    // Remove password from user object before sending response
+    user.password = undefined;
+
+    return res.status(201).json({
+        success: true,
+        token,
+        user
+    });
+};

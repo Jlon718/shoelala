@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import {authenticate} from '../../utils/helpers'
-// import { getUser } from '../../utils/helpers'
+import { getUser } from '../../utils/helpers'
 
 
 const Login = () => {
