@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router();
-const { newOrder, salesPerMonth } = require('../controllers/order')
+const { newOrder, getMonthlySales } = require('../controllers/order')
 
-router.get('/admin/sales-per-month', salesPerMonth);
+router.get('/admin/monthly-sales', getMonthlySales);
 module.exports = router;
 
 

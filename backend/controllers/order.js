@@ -27,49 +27,50 @@ exports.newOrder = async (req, res, next) => {
     })
 };
 
-exports.salesPerMonth = async (req, res, next) => {
-    const salesPerMonth = await Order.aggregate([
-        {
-            $group: {
-                // _id: {month: { $month: "$paidAt" } },
-                _id: {
-                    year: { $year: "$paidAt" },
-                    month: { $month: "$paidAt" }
-                },
-                total: { $sum: "$totalPrice" },
+exports.getMonthlySales = async (req, res, next) => {
+    try {
+        const sales = await Order.aggregate([
+            {
+                $match: {
+                    deliveredAt: { $ne: null } // Only include orders that have been delivered
+                }
             },
-        },
-        {
-            $addFields: {
-                month: {
-                    $let: {
-                        vars: {
-                            monthsInString: [, 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', ' Sept', 'Oct', 'Nov', 'Dec']
-                        },
-                        in: {
-                            $arrayElemAt: ['$$monthsInString', "$_id.month"]
-                        }
-                    }
+            {
+                $addFields: {
+                    month: { $month: "$deliveredAt" },
+                    year: { $year: "$deliveredAt" }
+                }
+            },
+            {
+                $group: {
+                    _id: { month: "$month", year: "$year" },
+                    totalSales: { $sum: "$totalPrice" }
+                }
+            },
+            {
+                $sort: { "_id.year": 1, "_id.month": 1 }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    month: "$_id.month",
+                    year: "$_id.year",
+                    totalSales: 1
                 }
             }
-        },
-        { $sort: { "_id.month": 1 } },
-        {
-            $project: {
-                _id: 0,
-                month: true,
-                total: true,
-            }
-        }
-    ])
-    if (!salesPerMonth) {
-        return res.status(404).json({
-            message: 'error sales per month',
-        })
+        ]);
+
+        console.log('Sales Data:', sales); // Debugging log
+
+        res.status(200).json({
+            success: true,
+            sales
+        });
+    } catch (error) {
+        console.error('Error fetching monthly sales data:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching monthly sales data'
+        });
     }
-    // return console.log(customerSales)
-    return res.status(200).json({
-        success: true,
-        salesPerMonth
-    })
 };
