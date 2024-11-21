@@ -17,6 +17,8 @@ import ConfirmOrder from './Components/Cart/ConfirmOrder';
 import Payment from './Components/Cart/Payment';
 import OrderSuccess from './Components/Cart/OrderSuccess';
 import axios from 'axios';
+import ProtectedRoute from './Components/Route/ProtectedRoute';
+import Dashboard from './Components/Admin/Dashboard';
 
 function App() {
   const [state, setState] = useState({
@@ -100,6 +102,14 @@ function App() {
           <Route path="/confirm-order" element={<ConfirmOrder cartItems={state.cartItems} shippingInfo={state.shippingInfo} />} exact="true" />
           <Route path="/payment" element={<Payment />} exact="true" />
           <Route path="/order-success" element={<OrderSuccess />} exact="true" />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute isAdmin={true}>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Router>
       <Footer />
