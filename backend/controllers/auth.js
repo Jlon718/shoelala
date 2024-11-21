@@ -1,4 +1,4 @@
-const { auth, storage } = require('../firebase'); // Adjust the path as necessary
+const { auth, storage } = require('../firebase');
 const { createUserWithEmailAndPassword, updateProfile } = require('firebase/auth');
 const { ref, uploadBytes, getDownloadURL } = require('firebase/storage');
 const User = require('../models/user');
@@ -91,3 +91,47 @@ exports.registerUser = async (req, res, next) => {
       user
     });
   };
+
+  exports.updateUserProfile = async (req, res) => {
+    try {
+        const { name, email, phone, address, avatar } = req.body; // `avatar` is Base64 string
+        const userId = req.user.id; // Assuming you have user ID from authentication middleware
+        let avatarUrl;
+
+        if (avatar) {
+            // Upload Base64 image to Cloudinary
+            const result = await cloudinary.uploader.upload(avatar, {
+                folder: 'profile_pictures',
+                public_id: `user_${userId}`,
+                overwrite: true,
+            });
+            avatarUrl = result.secure_url;
+        }
+
+        // Update user in the database
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            {
+                name,
+                email,
+                phone,
+                address,
+                avatar: avatarUrl ? { url: avatarUrl, public_id: `user_${userId}` } : undefined,
+            },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Profile updated successfully',
+            user: updatedUser,
+        });
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        res.status(500).json({ success: false, message: `User profile update failed: ${JSON.stringify(error)}` });
+    }
+};
