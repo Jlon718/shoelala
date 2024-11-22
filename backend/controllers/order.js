@@ -1,5 +1,7 @@
 const Order = require('../models/order');
 const Product = require('../models/product');
+const sendEmail = require('../utils/sendEmail');
+
 exports.newOrder = async (req, res, next) => {
     const {
         orderItems,
@@ -10,6 +12,7 @@ exports.newOrder = async (req, res, next) => {
         totalPrice,
         paymentInfo
     } = req.body;
+    console.log('Request Body:', req.body); // Debugging log
     const order = await Order.create({
         orderItems,
         shippingInfo,
@@ -21,6 +24,43 @@ exports.newOrder = async (req, res, next) => {
         paidAt: Date.now(),
         user: req.user.id
     })
+    const productList = orderItems.map(item => `${item.name} - ${item.quantity} x $${item.price}`).join('\n');
+        const message = `
+            Hi ${req.user.name},
+
+            Your order has been placed successfully. Here are the details:
+
+            Products/Services:
+            ${productList}
+
+            Subtotal: $${itemsPrice}
+            Shipping: $${shippingPrice}
+            Tax: $${taxPrice}
+            Grand Total: $${totalPrice}
+
+            Thank you for shopping with us!
+
+            Best regards,
+            YourAppName Team
+        `;
+
+        // Send email
+        await sendEmail({
+            email: req.user.email,
+            subject: 'Order Confirmation',
+            message
+        });
+
+        const user = await User.findById(req.user.id);
+        if (user.fcmToken) {
+            await sendPushNotification(user.fcmToken, message);
+        }
+
+        return res.status(200).json({
+            success: true,
+            order
+        });
+
     return res.status(200).json({
         success: true,
         order

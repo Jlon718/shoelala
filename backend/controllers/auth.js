@@ -135,3 +135,19 @@ exports.registerUser = async (req, res, next) => {
         res.status(500).json({ success: false, message: `User profile update failed: ${JSON.stringify(error)}` });
     }
 };
+
+exports.updateFcmToken = async (req, res, next) => {
+  try {
+      const user = await User.findByIdAndUpdate(req.user.id, { fcmToken: req.body.fcmToken }, { new: true });
+      res.status(200).json({
+          success: true,
+          user
+      });
+  } catch (error) {
+      console.error('Error updating FCM token:', error);
+      res.status(500).json({
+          success: false,
+          message: 'Error updating FCM token'
+      });
+  }
+};

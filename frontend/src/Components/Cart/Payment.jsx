@@ -8,7 +8,7 @@ import MetaData from '../Layout/MetaData';
 import Loader from '../Layout/Loader';
 import CheckoutSteps from './CheckoutSteps';
 
-const Payment = ({ cartItems }) => {
+const Payment = () => {
     const location = useLocation();
     const { shippingInfo } = location.state || {};
     const [loading, setLoading] = useState(true);
@@ -18,18 +18,17 @@ const Payment = ({ cartItems }) => {
         setLoading(false);
     }, []);
 
+    const orderInfo = JSON.parse(sessionStorage.getItem('orderInfo'));
+    const cartItems = localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : [];
+
     const order = {
         orderItems: cartItems,
-        shippingInfo
+        shippingInfo,
+        itemsPrice: orderInfo.itemsPrice,
+        shippingPrice: orderInfo.shippingPrice,
+        taxPrice: orderInfo.taxPrice,
+        totalPrice: orderInfo.totalPrice
     };
-
-    const orderInfo = JSON.parse(sessionStorage.getItem('orderInfo'));
-    if (orderInfo) {
-        order.itemsPrice = orderInfo.itemsPrice;
-        order.shippingPrice = orderInfo.shippingPrice;
-        order.taxPrice = orderInfo.taxPrice;
-        order.totalPrice = orderInfo.totalPrice;
-    }
 
     const createOrder = async (order) => {
         try {
@@ -40,6 +39,7 @@ const Payment = ({ cartItems }) => {
                     'Content-Type': 'application/json'
                 }
             };
+            console.log('Request Body:', order); // Debugging log
             const { data } = await axios.post(`${import.meta.env.VITE_API}/order/new`, order, config);
             navigate('/success');
         } catch (error) {
