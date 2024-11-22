@@ -179,7 +179,7 @@ const NewProduct = () => {
 
     const options = {
         filterType: 'checkbox',
-        onRowsSelect: (rowsSelected, allRows) => handleSelect(allRows),
+        onRowSelectionChange: (rowsSelected, allRows) => handleSelect(allRows),
         expandableRows: true,
         renderExpandableRow: (rowData, rowMeta) => {
             const product = products[rowMeta.dataIndex];

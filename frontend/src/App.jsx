@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 
-import './App.css'
-// import './styles.css'
-import Header from './Components/Layout/Header'
-import Footer from './Components/Layout/Footer'
-import Home from './Components/Home'
+import './app.css'
+import './styles.css'
+import Header from './Components/Layout/Header';
+import Footer from './Components/Layout/Footer';
+import Index from './Components/Index';
+import Home from './Components/Home';
 import ProductDetails from './Components/Product/ProductDetails';
 import Login from './Components/User/Login'
 import Register from './Components/User/Register'
@@ -96,6 +97,7 @@ function App() {
        <Header cartItems={state.cartItems} />
         <Routes>
           <Route path="/" element={<Home />} exact="true" />
+          <Route path="/index" element={<Index />} exact="true" />
           <Route path="/product/:id" element={<ProductDetails cartItems={state.cartItems} addItemToCart={addItemToCart} />} exact="true" />
           <Route path="/search/:keyword" element={<Home />} exact="true" />
           <Route path="/login" element={<Login />} exact="true" />
@@ -107,6 +109,8 @@ function App() {
           <Route path="/confirm-order" element={<ConfirmOrder cartItems={state.cartItems} shippingInfo={state.shippingInfo} />} exact="true" />
           <Route path="/payment" element={<Payment />} exact="true" />
           <Route path="/order-success" element={<OrderSuccess />} exact="true" />
+          <Route path="/dashboard" element={<Dashboard />} exact="true" />
+          
           <Route
             path="/admin/orders"
             element={<OrdersList />} />
