@@ -45,11 +45,11 @@
             {
                 public_id: {
                     type: String,
-                    required: true
+                    required: false
                 },
                 uri: {
                     type: String,
-                    required: true
+                    required: false
                 },
             }
         ],

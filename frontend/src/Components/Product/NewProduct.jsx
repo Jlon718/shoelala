@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import MUIDataTable from "mui-datatables";
 import { Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, Checkbox, FormControlLabel } from '@mui/material';
@@ -7,6 +8,7 @@ import { Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, C
 const NewProduct = () => {
     const [products, setProducts] = useState([]);
     const [selectedProducts, setSelectedProducts] = useState([]);
+    const navigate = useNavigate();
     const [product, setProduct] = useState({
         name: '',
         price: 0,
@@ -168,7 +170,7 @@ const NewProduct = () => {
                     const product = products[tableMeta.rowIndex];
                     return (
                         <>
-                            <Button onClick={() => handleEdit(product)}>Edit</Button>
+                            <Button onClick={() => navigate(`/admin/product/${product._id}`)}>Edit</Button>
                             <Button onClick={() => handleDelete(product._id)}>Delete</Button>
                         </>
                     );
@@ -179,7 +181,7 @@ const NewProduct = () => {
 
     const options = {
         filterType: 'checkbox',
-        onRowsSelect: (rowsSelected, allRows) => handleSelect(allRows),
+        onRowSelectionChange: (rowsSelected, allRows) => handleSelect(allRows),
         expandableRows: true,
         renderExpandableRow: (rowData, rowMeta) => {
             const product = products[rowMeta.dataIndex];
@@ -200,7 +202,7 @@ const NewProduct = () => {
 
     return (
         <>
-            <Button onClick={() => setOpen(true)}>Add Product</Button>
+            <Button onClick={() => navigate('/admin/product/new/form')}>Add Product</Button>
             <Button onClick={handleBulkDelete} disabled={selectedProducts.length === 0}>Delete Selected</Button>
             <MUIDataTable
                 title={"Products"}

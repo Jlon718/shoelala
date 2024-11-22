@@ -1,5 +1,6 @@
 const Product = require('../models/product');
 const Order = require('../models/order');
+const cloudinary = require('cloudinary')
 
 // Get all products
 exports.getProducts = async (req, res, next) => {
@@ -41,16 +42,54 @@ exports.getSingleProduct = async (req, res, next) => {
 
 // Create new product
 exports.newProduct = async (req, res, next) => {
-    try {
+	try {
+        let images = [];
+        if (typeof req.body.images === 'string') {
+            images.push(req.body.images);
+        } else {
+            images = req.body.images;
+        }
+
+        let imagesLinks = [];
+
+        for (let i = 0; i < images.length; i++) {
+            try {
+                const result = await cloudinary.uploader.upload(images[i], {
+                    folder: 'products',
+                    width: 150,
+                    crop: "scale",
+                });
+
+                imagesLinks.push({
+                    public_id: result.public_id,
+                    url: result.secure_url
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        req.body.images = imagesLinks;
+        req.body.user = req.user.id;
+
         const product = await Product.create(req.body);
-        res.status(201).json({
+
+        if (!product) {
+            return res.status(400).json({
+                success: false,
+                message: 'Product not created'
+            });
+        }
+
+        return res.status(201).json({
             success: true,
             product
         });
     } catch (error) {
-        res.status(500).json({
+        console.error('Error creating product:', error);
+        return res.status(500).json({
             success: false,
-            message: 'Server Error'
+            message: 'Error creating product'
         });
     }
 };
@@ -59,24 +98,62 @@ exports.newProduct = async (req, res, next) => {
 exports.updateProduct = async (req, res, next) => {
     try {
         let product = await Product.findById(req.params.id);
+
         if (!product) {
             return res.status(404).json({
                 success: false,
                 message: 'Product not found'
             });
         }
+
+        let images = [];
+        if (typeof req.body.images === 'string') {
+            images.push(req.body.images);
+        } else if (req.body.images) {
+            images = req.body.images;
+        }
+
+        if (images.length > 0) {
+            // Delete existing images from Cloudinary
+            for (let i = 0; i < product.images.length; i++) {
+                await cloudinary.uploader.destroy(product.images[i].public_id);
+            }
+
+            // Upload new images to Cloudinary
+            let imagesLinks = [];
+            for (let i = 0; i < images.length; i++) {
+                const result = await cloudinary.uploader.upload(images[i], {
+                    folder: 'products',
+                    width: 150,
+                    crop: "scale",
+                });
+
+                imagesLinks.push({
+                    public_id: result.public_id,
+                    url: result.secure_url
+                });
+            }
+
+            req.body.images = imagesLinks;
+        } else {
+            req.body.images = product.images;
+        }
+
         product = await Product.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
-            runValidators: true
+            runValidators: true,
+            useFindAndModify: false
         });
+
         res.status(200).json({
             success: true,
             product
         });
     } catch (error) {
+        console.error('Error updating product:', error);
         res.status(500).json({
             success: false,
-            message: 'Server Error'
+            message: 'Error updating product'
         });
     }
 };

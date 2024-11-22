@@ -11,7 +11,7 @@ import Login from './Components/User/Login'
 import Register from './Components/User/Register'
 import Cart from './Components/Cart/Cart';
 import NewProduct from './Components/Product/NewProduct';
-import UpdateProduct from './Components/Product/UpdateProduct';
+import ProductForm from './Components/Admin/ProductForm';
 import Shipping from './Components/Cart/Shipping';
 import ConfirmOrder from './Components/Cart/ConfirmOrder';
 import Payment from './Components/Cart/Payment';
@@ -23,6 +23,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import OrdersList from './Components/Admin/OrdersList';
 import ProcessOrder from './Components/Admin/ProcessOrder';
+import UpdateProduct from './Components/Admin/UpdateProduct';
 
 
 function App() {
@@ -102,6 +103,7 @@ function App() {
           <Route path="/register" element={<Register />} exact="true" />
           <Route path="/cart" element={<Cart cartItems={state.cartItems} addItemToCart={addItemToCart} removeItemFromCart={removeItemFromCart} />} exact="true" />
           <Route path="/product/new" element={<NewProduct />} exact />
+          <Route path="/admin/product/new/form" element={<ProductForm />} exact />
           <Route path="/update-product/:id" element={<UpdateProduct />} exact="true" />
           <Route path="/shipping" element={<Shipping saveShippingInfo={saveShippingInfo} />} exact="true" />
           <Route path="/confirm-order" element={<ConfirmOrder cartItems={state.cartItems} shippingInfo={state.shippingInfo} />} exact="true" />
@@ -121,6 +123,9 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/admin/product/:id"
+            element={<UpdateProduct />} />
         </Routes>
       </Router>
       <Footer />
