@@ -60,7 +60,7 @@ const Register = () => {
             const googleUser = {
                 name: displayName,
                 email: email,
-                password: "google-auth", // Dummy password
+                password: "", 
             };
             await register(googleUser);
         } catch (error) {
@@ -76,7 +76,7 @@ const Register = () => {
             const facebookUser = {
                 name: displayName,
                 email: email,
-                password: "facebook-auth", // Dummy password
+                password: "", 
             };
             await register(facebookUser);
         } catch (error) {

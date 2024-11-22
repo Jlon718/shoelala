@@ -16,48 +16,48 @@ exports.registerUser = async (req, res, next) => {
   
       let photoURL = '';
       if (avatar) {
-        // Convert base64 string to Buffer
-        const buffer = Buffer.from(avatar, 'base64');
-  
-        // Upload photo to Firebase Storage
-        const storageRef = ref(storage, `profile_photos/${firebaseUser.uid}`);
-        const uploadResult = await uploadBytes(storageRef, buffer);
-        photoURL = await getDownloadURL(uploadResult.ref);
-        console.log('Photo uploaded to Firebase Storage:', photoURL);
+          // Upload photo to Cloudinary
+          const result = await cloudinary.uploader.upload(`data:image/png;base64,${avatar}`, {
+              folder: 'profile_photos',
+              public_id: firebaseUser.uid,
+          });
+          photoURL = result.secure_url;
+          console.log('Photo uploaded to Cloudinary:', photoURL);
       }
-  
+
       // Update Firebase user profile
       await updateProfile(firebaseUser, {
-        displayName: name,
-        photoURL: photoURL
+          displayName: name,
+          photoURL: photoURL
       });
       console.log('Firebase user profile updated:', firebaseUser);
-  
+
       // Save user to your database
       const user = await User.create({
-        name,
-        email,
-        password,
-        phone,
-        address,
-        avatar: {
-          public_id: firebaseUser.uid,
-          url: photoURL
-        },
+          name,
+          email,
+          password,
+          phone,
+          address,
+          avatar: {
+              public_id: firebaseUser.uid,
+              url: photoURL
+          },
       });
-  
+
       res.status(201).json({
-        success: true,
-        user
+          success: true,
+          user
       });
-    } catch (error) {
+  } catch (error) {
       console.error('Error during user registration:', error.message);
+      console.error('Error payload:', error);
       res.status(500).json({
-        success: false,
-        message: `User registration failed: ${error.message}`
+          success: false,
+          message: `User registration failed: ${error.message}`
       });
-    }
-  };
+  }
+};
   
   exports.loginUser = async (req, res, next) => {
     const { email, password } = req.body;
