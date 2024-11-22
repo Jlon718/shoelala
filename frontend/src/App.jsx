@@ -23,8 +23,11 @@ import Dashboard from './Components/Admin/Dashboard';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import OrdersList from './Components/Admin/OrdersList';
+import OrderDetails from './Components/Order/OrderDetails';
 import ProcessOrder from './Components/Admin/ProcessOrder';
 import UpdateProduct from './Components/Admin/UpdateProduct';
+import ListOrders from './Components/Order/ListOrders';
+import ReviewProduct from './Components/Review/ReviewProduct';
 
 
 function App() {
@@ -100,6 +103,7 @@ function App() {
           <Route path="/" element={<Home />} exact="true" />
           <Route path="/index" element={<Index />} exact="true" />
           <Route path="/product/:id" element={<ProductDetails cartItems={state.cartItems} addItemToCart={addItemToCart} />} exact="true" />
+          <Route path="/review/product/:id" element={<ReviewProduct cartItems={state.cartItems} addItemToCart={addItemToCart} />} exact="true" />
           <Route path="/search/:keyword" element={<Home />} exact="true" />
           <Route path="/login" element={<Login />} exact="true" />
           <Route path="/register" element={<Register />} exact="true" />
@@ -112,7 +116,8 @@ function App() {
           <Route path="/payment" element={<Payment />} exact="true" />
           <Route path="/order-success" element={<OrderSuccess />} exact="true" />
           <Route path="/dashboard" element={<Dashboard />} exact="true" />
-          
+          <Route path="/orders/me" element={<ListOrders />} />
+          <Route path="/order/:id" element={<OrderDetails />} />
           <Route
             path="/admin/orders"
             element={<OrdersList />} />

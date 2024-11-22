@@ -51,15 +51,15 @@ exports.newOrder = async (req, res, next) => {
             message
         });
 
-        const user = await User.findById(req.user.id);
-        if (user.fcmToken) {
-            await sendPushNotification(user.fcmToken, message);
-        }
+        // const user = await User.findById(req.user.id);
+        // if (user.fcmToken) {
+        //     await sendPushNotification(user.fcmToken, message);
+        // }
 
-        return res.status(200).json({
-            success: true,
-            order
-        });
+        // return res.status(200).json({
+        //     success: true,
+        //     order
+        // });
 
     return res.status(200).json({
         success: true,
@@ -186,7 +186,6 @@ exports.getSingleOrder = async (req, res, next) => {
     if (!order) {
         return res.status(404).json({
             message: 'No Order found with this ID',
-
         })
     }
     return res.status(200).json({
@@ -194,3 +193,14 @@ exports.getSingleOrder = async (req, res, next) => {
         order
     })
 };
+
+exports.myOrders = async (req, res, next) => {
+    const orders = await Order.find({ user: req.user.id })
+    // console.log(req.user)
+    if (!orders) 
+        return res.status(400).json({message: 'error loading orders'})
+    return res.status(200).json({
+        success: true,
+        orders
+    })
+}

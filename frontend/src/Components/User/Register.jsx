@@ -33,7 +33,7 @@ const Register = () => {
 
     const register = async (userData) => {
         try {
-            const { data } = await axios.post('/api/auth/register', userData);
+            const { data } = await axios.post(`http://localhost:4001/api/v1/register`, userData);
             setUser(data.user);
             navigate('/');
         } catch (error) {
