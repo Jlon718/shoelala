@@ -1,44 +1,49 @@
-import React from 'react'
-import '../../styles.css'
-import Search from './Search'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { AppBar, Toolbar, Typography, IconButton, Button, Box, Badge } from '@mui/material';
+import { Link } from 'react-router-dom';
+import LoginIcon from '@mui/icons-material/Login';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import shoelala from '../../img/shoelala.png'; 
 
-const Header = ({cartItems}) => {
-    return (
-		<>
-			<nav className="navbar row">
-				<div className="col-12 col-md-3">
-					<div className="navbar-brand">
-						<img src="./images/shopit_logo.png" />
-					</div>
-				</div>
-				{/* <div className="col-12 col-md-6 mt-2 mt-md-0">
-					<div className="input-group">
-						<input
-							type="text"
-							id="search_field"
-							className="form-control"
-							placeholder="Enter Product Name ..."
-						/>
-						<div className="input-group-append">
-							<button id="search_btn" className="btn">
-								<i className="fa fa-search" aria-hidden="true"></i>
-							</button>
-						</div>
-					</div>
-				</div> */}
-				<Search />
-				<div className="col-12 col-md-3 mt-4 mt-md-0 text-center">
-				<Link to="/login" className="btn ml-4" id="login_btn">Login</Link>
-				<Link to="/cart" style={{ textDecoration: 'none' }} >
-                        <span id="cart" className="ml-3">Cart</span>
-                        
-                        {/*<span className="ml-1" id="cart_count">2</span>*/}
-                    </Link>
-					<span className="ml-1" id="cart_count">{cartItems.length}</span>
-				</div>
-			</nav>
-        </>
-    )
-}
-export default Header
+const Header = ({ cartItems }) => {
+  return (
+    <AppBar position="static" sx={{ backgroundColor: '#21273D', color: '#fff' }}>
+      <Toolbar>
+        <IconButton edge="start" color="inherit" aria-label="menu">
+          <img src={shoelala} alt="Shoelala Logo" style={{ height: '40px' }} />
+        </IconButton>
+        <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          Shoelala
+        </Typography>
+        {/* Buttons */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          <Link to="/login" style={{ textDecoration: 'none' }}>
+            <Button
+              variant="outlined"
+              startIcon={<LoginIcon />}
+              sx={{
+                color: '#fff',
+                borderColor: '#fff',
+                '&:hover': {
+                  borderColor: '#83B4FF',
+                  color: '#83B4FF',
+                },
+              }}
+            >
+              Login
+            </Button>
+          </Link>
+          <Link to="/cart" style={{ textDecoration: 'none' }}>
+            <IconButton color="inherit" sx={{ color: '#83B4FF' }}>
+              <Badge badgeContent={cartItems.length} sx={{ '& .MuiBadge-badge': { backgroundColor: '#FDFFE2', color: '#000' } }}>
+                <ShoppingCartIcon />
+              </Badge>
+            </IconButton>
+          </Link>
+        </Box>
+      </Toolbar>
+    </AppBar>
+  );
+};
+
+export default Header;
