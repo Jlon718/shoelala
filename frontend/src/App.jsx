@@ -21,6 +21,8 @@ import ProtectedRoute from './Components/Route/ProtectedRoute';
 import Dashboard from './Components/Admin/Dashboard';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import OrdersList from './Components/Admin/OrdersList';
+import ProcessOrder from './Components/Admin/ProcessOrder';
 
 
 function App() {
@@ -105,6 +107,12 @@ function App() {
           <Route path="/confirm-order" element={<ConfirmOrder cartItems={state.cartItems} shippingInfo={state.shippingInfo} />} exact="true" />
           <Route path="/payment" element={<Payment />} exact="true" />
           <Route path="/order-success" element={<OrderSuccess />} exact="true" />
+          <Route
+            path="/admin/orders"
+            element={<OrdersList />} />
+          <Route
+            path="/admin/order/:id"
+            element={<ProcessOrder />} />
           <Route
             path="/dashboard"
             element={
