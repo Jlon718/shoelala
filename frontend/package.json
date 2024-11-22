@@ -20,6 +20,7 @@
     "preact": "^10.24.1",
     "rc-slider": "^9.7.5",
     "react-bootstrap": "^2.10.5",
+    "react-facebook-login": "^4.1.1",
     "react-helmet": "^6.1.0",
     "react-js-pagination": "^3.0.3",
     "react-router-dom": "^6.27.0",

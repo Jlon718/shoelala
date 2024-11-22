@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { getAuth, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup } from 'firebase/auth';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDaR6gEetXa3nSlv4n4waLh1wnjaqhI60s",
@@ -13,6 +14,11 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
+const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
+const facebookProvider = new FacebookAuthProvider();
+
+export { auth, googleProvider, facebookProvider };
 
 export const requestForToken = (setTokenFound) => {
   return getToken(messaging, { vapidKey: 'YOUR_VAPID_KEY' }).then((currentToken) => {
@@ -36,3 +42,4 @@ export const onMessageListener = () =>
       resolve(payload);
     });
   });
+
