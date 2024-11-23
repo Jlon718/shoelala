@@ -291,6 +291,25 @@ exports.createProductReview = async (req, res, next) => {
 	})
 };
 
+exports.deleteReview = async (req, res, next) => {
+    const product = await Product.findById(req.query.productId);
+    const reviews = product.reviews.filter(review => review._id.toString() !== req.query.id.toString());
+    const numOfReviews = reviews.length;
+    const ratings = product.reviews.reduce((acc, item) => item.rating + acc, 0) / reviews.length
+    await Product.findByIdAndUpdate(req.query.productId, {
+        reviews,
+        ratings,
+        numOfReviews
+    }, {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false
+    })
+    return res.status(200).json({
+        success: true
+    })
+};
+
 exports.getProductReviews = async (req, res, next) => {
     const product = await Product.findById(req.query.id);
     return res.status(200).json({

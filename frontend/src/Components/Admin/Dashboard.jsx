@@ -25,58 +25,58 @@ const Dashboard = () => {
             outOfStock += 1;
         }
     })
-    const getAdminProducts = async () => {
-        try {
-            const config = {
-                headers: {
+    // const getAdminProducts = async () => {
+    //     try {
+    //         const config = {
+    //             headers: {
                    
-                    'Authorization': `Bearer ${getToken()}`
-                }
-            }
-            const { data } = await axios.get(`${import.meta.env.VITE_API}/admin/products`, config)
-            console.log(data)
-            setProducts(data.products)
-            setLoading(false)
-        } catch (error) {
-            setError(error.response.data.message)
-        }
-    }
-    const adminOrders = async () => {
-        try {
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getToken()}`
-                }
-            }
-            const { data } = await axios.get(`${import.meta.env.VITE_API}/admin/orders`, config)
-            setAllOrders(data.orders)
+    //                 'Authorization': `Bearer ${getToken()}`
+    //             }
+    //         }
+    //         const { data } = await axios.get(`${import.meta.env.VITE_API}/admin/products`, config)
+    //         console.log(data)
+    //         setProducts(data.products)
+    //         setLoading(false)
+    //     } catch (error) {
+    //         setError(error.response.data.message)
+    //     }
+    // }
+    // const adminOrders = async () => {
+    //     try {
+    //         const config = {
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${getToken()}`
+    //             }
+    //         }
+    //         const { data } = await axios.get(`${import.meta.env.VITE_API}/admin/orders`, config)
+    //         setAllOrders(data.orders)
             
-        } catch (error) {
-            setError(error.response.data.message)
-        }
-    }
-    const adminUsers = async () => {
-        try {
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getToken()}`
-                }
-            }
-            const { data } = await axios.get(`${import.meta.env.VITE_API}/admin/users`, config)
-            setAllUsers(data.users)
+    //     } catch (error) {
+    //         setError(error.response.data.message)
+    //     }
+    // }
+    // const adminUsers = async () => {
+    //     try {
+    //         const config = {
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${getToken()}`
+    //             }
+    //         }
+    //         const { data } = await axios.get(`${import.meta.env.VITE_API}/admin/users`, config)
+    //         setAllUsers(data.users)
             
-        } catch (error) {
-            setError(error.response.data.message)
+    //     } catch (error) {
+    //         setError(error.response.data.message)
             
-        }
-    }
-    useEffect(() => {
-        getAdminProducts()
-        adminOrders()
-        adminUsers()
-    }, [])
+    //     }
+    // }
+    // useEffect(() => {
+    //     getAdminProducts()
+    //     adminOrders()
+    //     adminUsers()
+    // }, [])
 console.log(allOrders.length, allUsers.length)
     return (
         <>

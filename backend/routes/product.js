@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const upload = require("../utils/multer");
-const { isAuthenticatedUser, } = require('../middlewares/auth');
-const { getProducts, getSingleProduct, newProduct, updateProduct, deleteProduct, bulkDeleteProducts, productSales, createProductReview, getProductReviews, } = require('../controllers/product');
+const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth');
+const { getProducts, getSingleProduct, newProduct, updateProduct, deleteProduct, bulkDeleteProducts, productSales, createProductReview, getProductReviews,deleteReview } = require('../controllers/product');
 
 router.get('/products', getProducts);
 router.get('/product/:id', getSingleProduct);
@@ -13,6 +13,7 @@ router.get('/admin/product-sales', productSales);
 router.post('/admin/product/new', isAuthenticatedUser, upload.array('images', 10), newProduct);
 router.route('/admin/product/:id').delete(deleteProduct).put(updateProduct);
 router.put('/review', isAuthenticatedUser, createProductReview);
-router.get('/reviews', getProductReviews)
+router.get('/reviews', getProductReviews);
+router.delete('/reviews', isAuthenticatedUser, authorizeRoles('admin'), deleteReview)
 
 module.exports = router;

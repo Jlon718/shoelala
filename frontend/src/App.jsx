@@ -28,6 +28,7 @@ import ProcessOrder from './Components/Admin/ProcessOrder';
 import UpdateProduct from './Components/Admin/UpdateProduct';
 import ListOrders from './Components/Order/ListOrders';
 import ReviewProduct from './Components/Review/ReviewProduct';
+import ProductReviews from './Components/Admin/ProcessReview';
 
 
 function App() {
@@ -118,6 +119,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} exact="true" />
           <Route path="/orders/me" element={<ListOrders />} />
           <Route path="/order/:id" element={<OrderDetails />} />
+          
           <Route
             path="/admin/orders"
             element={<OrdersList />} />
@@ -135,6 +137,12 @@ function App() {
           <Route
             path="/admin/product/:id"
             element={<UpdateProduct />} />
+            <Route
+          path="/admin/reviews"
+          element={
+            <ProtectedRoute isAdmin={true} >
+              <ProductReviews />
+            </ProtectedRoute>} />
         </Routes>
       </Router>
       <Footer />
