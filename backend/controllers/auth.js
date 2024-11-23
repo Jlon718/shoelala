@@ -1,6 +1,5 @@
 const { auth, storage } = require('../firebase');
 const { createUserWithEmailAndPassword, updateProfile } = require('firebase/auth');
-const { ref, uploadBytes, getDownloadURL } = require('firebase/storage');
 const User = require('../models/user');
 const crypto = require('crypto');
 const cloudinary = require('cloudinary');
@@ -58,6 +57,7 @@ exports.registerUser = async (req, res, next) => {
       });
   }
 };
+
   
   exports.loginUser = async (req, res, next) => {
     const { email, password } = req.body;
@@ -91,6 +91,18 @@ exports.registerUser = async (req, res, next) => {
       user
     });
   };
+
+exports.getUserProfile = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user.id
+        );
+        if (!user) { return res.status(404).json({ success: false, message: 'User not found' }); }
+        res.status(200).json({ success: true, user });
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).json({ success: false, message: 'Error fetching user profile' });
+    }
+};
 
   exports.updateUserProfile = async (req, res) => {
     try {

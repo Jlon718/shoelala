@@ -29,6 +29,7 @@ import UpdateProduct from './Components/Admin/UpdateProduct';
 import ListOrders from './Components/Order/ListOrders';
 import ReviewProduct from './Components/Review/ReviewProduct';
 import ProductReviews from './Components/Admin/ProcessReview';
+import Profile from './Components/User/Profile';
 
 
 function App() {
@@ -119,6 +120,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} exact="true" />
           <Route path="/orders/me" element={<ListOrders />} />
           <Route path="/order/:id" element={<OrderDetails />} />
+          <Route path="/profile" element={<Profile />} />
           
           <Route
             path="/admin/orders"
