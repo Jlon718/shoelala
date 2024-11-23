@@ -13,8 +13,8 @@ router.post('/products/bulk-delete', bulkDeleteProducts);
 router.get('/admin/product-sales', productSales);
 router.post('/admin/product/new', isAuthenticatedUser, upload.array('images', 10), newProduct);
 router.route('/admin/product/:id').delete(deleteProduct).put(updateProduct);
-router.put('/review', isAuthenticatedUser, createProductReview);
+router.put('/review', createProductReview);
 router.get('/reviews', getProductReviews);
-router.delete('/reviews', isAuthenticatedUser, authorizeRoles('admin'), deleteReview)
+router.delete('/reviews', deleteReview)
 
 module.exports = router;

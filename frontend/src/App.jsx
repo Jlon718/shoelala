@@ -139,12 +139,12 @@ function App() {
           <Route
             path="/admin/product/:id"
             element={<UpdateProduct />} />
-            <Route
+          <Route
           path="/admin/reviews"
           element={
-            <ProtectedRoute isAdmin={true} >
+           
               <ProductReviews />
-            </ProtectedRoute>} />
+          }/>
         </Routes>
       </Router>
       <Footer />

@@ -3,7 +3,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import MUIDataTable from "mui-datatables";
-import { Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, Checkbox, FormControlLabel } from '@mui/material';
+import { Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, Checkbox, FormControlLabel, Box, Grid } from '@mui/material';
+import Sidebar from '../Admin/SideBar';
 
 const NewProduct = () => {
     const [products, setProducts] = useState([]);
@@ -202,6 +203,11 @@ const NewProduct = () => {
 
     return (
         <>
+         <Box sx={{ display: 'flex' }}>
+         <Grid item xs={12} md={2}>
+                    <Sidebar />
+                </Grid>
+            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
             <Button onClick={() => navigate('/admin/product/new/form')}>Add Product</Button>
             <Button onClick={handleBulkDelete} disabled={selectedProducts.length === 0}>Delete Selected</Button>
             <MUIDataTable
@@ -288,6 +294,8 @@ const NewProduct = () => {
                     <Button onClick={handleSubmit}>{isEdit ? "Update" : "Create"}</Button>
                 </DialogActions>
             </Dialog>
+            </Box>
+        </Box>
         </>
     );
 };

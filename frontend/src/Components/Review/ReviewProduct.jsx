@@ -8,6 +8,10 @@ import '../../productdetails.css';
 import axios from 'axios';
 import { getUser, getToken, successMsg, errMsg } from '../../utils/helpers'
 import ListReviews from '../Review/ListReviews';
+import { Filter } from 'bad-words' // Import as a class
+
+
+
 
 const ReviewProduct = ({ cartItems, addItemToCart }) => {
     const [product, setProduct] = useState({});
@@ -18,8 +22,13 @@ const ReviewProduct = ({ cartItems, addItemToCart }) => {
     const [errorReview, setErrorReview] = useState('');
     const [success, setSuccess] = useState('')
     const [error, setError] = useState('');
+
+    const filter = new Filter(); // Instantiate the class
+    filter.addWords('some', 'bad', 'word');
+
     let { id } = useParams();
     let navigate = useNavigate();
+
 
     const productDetails = async (id) => {
         const link = `${import.meta.env.VITE_API}/product/${id}`;
@@ -98,6 +107,11 @@ const ReviewProduct = ({ cartItems, addItemToCart }) => {
 
     const newReview = async (reviewData) => {
         try {
+            const filteredComment = filter.clean(comment); // Filter bad words
+            const reviewData = {
+                rating,
+                comment: filteredComment,
+            };
             const config = {
                 headers: {
                     'Content-Type': 'application/json',
