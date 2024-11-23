@@ -1,80 +1,149 @@
-import React, { Fragment } from 'react'
-import { Link } from 'react-router-dom'
-import MetaData from '../Layout/MetaData'
-import { useParams, useNavigate } from 'react-router-dom'
-const Cart = ({cartItems, addItemToCart, removeItemFromCart}) => {
-    const navigate = useNavigate()
-    const increaseQty = (id, quantity, stock) => {
-        const newQty = quantity + 1;
-        if (newQty > stock) return;
-        addItemToCart(id, newQty);
-    }
-    const decreaseQty = (id, quantity) => {
-        const newQty = quantity - 1;
-        if (newQty <= 0) return;
-        addItemToCart(id, newQty);
-    }
-    const removeCartItemHandler = (id) => {
-        removeItemFromCart(id)
-    }
-    const checkoutHandler = () => {
-        navigate('/shipping')
-    }
-    localStorage.setItem('cartItems', JSON.stringify(cartItems))
-    return (
-        <>
-            <MetaData title={'Your Cart'} />
-            {cartItems.length === 0 ? <h2 className="mt-5">Your Cart is Empty</h2> : (
-                <>
-                    <h2 className="mt-5">Your Cart: <b>{cartItems.length} items</b></h2>
-                    <div className="row d-flex justify-content-between">
-                        <div className="col-12 col-lg-8">
-                            {cartItems.map(item => (
-                                <>
-                                    <hr />
-                                    <div className="cart-item" key={item.product}>
-                                        <div className="row">
-                                            <div className="col-4 col-lg-3">
-                                                <img src={item.image} alt="Laptop" height="90" width="115" />
-                                            </div>
-                                            <div className="col-5 col-lg-3">
-                                                <Link to={`/products/${item.product}`}>{item.name}</Link>
-                                            </div>
-                                            <div className="col-4 col-lg-2 mt-4 mt-lg-0">
-                                                <p id="card_item_price">${item.price}</p>
-                                            </div>
-                                            <div className="col-4 col-lg-3 mt-4 mt-lg-0">
-                                                <div className="stockCounter d-inline">
-                                                    <span className="btn btn-danger minus" onClick={() => decreaseQty(item.product, item.quantity)}>-</span>
-                                                    <input type="number" className="form-control count d-inline" value={item.quantity} readOnly />
-                                                    <span className="btn btn-primary plus" onClick={() => increaseQty(item.product, item.quantity, item.stock)}>+</span>
-                                                </div>
-                                            </div>
-                                            <div className="col-4 col-lg-1 mt-4 mt-lg-0">
-                                                <i id="delete_cart_item" className="fa fa-trash btn btn-danger" onClick={() => removeCartItemHandler(item.product)} ></i>
-                                                {/* <i id="delete_cart_item" className="fa fa-trash btn btn-danger" ></i> */}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <hr />
-                                </>
-                            ))}
-                        </div>
-                        <div className="col-12 col-lg-3 my-4">
-                            <div id="order_summary">
-                                <h4>Order Summary</h4>
-                                <hr />
-                                <p>Subtotal:  <span className="order-summary-values">{cartItems.reduce((acc, item) => (acc + Number(item.quantity)), 0)} (Units)</span></p>
-                                <p>Est. total: <span className="order-summary-values">${cartItems.reduce((acc, item) => acc + item.quantity * item.price, 0).toFixed(2)}</span></p>
-                                <hr />
-                                <button id="checkout_btn" className="btn btn-primary btn-block" onClick={checkoutHandler}>Check out</button>
-                                {/*<button id="checkout_btn" className="btn btn-primary btn-block" >Check out</button>*/}
-                            </div>
-                        </div>
-                    </div>
-                </>
-            )}
-        </>
-    )
-}
-export default Cart
+import React from 'react';
+import { Link } from 'react-router-dom';
+import MetaData from '../Layout/MetaData';
+import { useNavigate } from 'react-router-dom';
+
+const Cart = ({ cartItems, addItemToCart, removeItemFromCart }) => {
+  const navigate = useNavigate();
+
+  const increaseQty = (id, quantity, stock) => {
+    const newQty = quantity + 1;
+    if (newQty > stock) return;
+    addItemToCart(id, newQty);
+  };
+
+  const decreaseQty = (id, quantity) => {
+    const newQty = quantity - 1;
+    if (newQty <= 0) return;
+    addItemToCart(id, newQty);
+  };
+
+  const removeCartItemHandler = (id) => {
+    removeItemFromCart(id);
+  };
+
+  const checkoutHandler = () => {
+    navigate('/shipping');
+  };
+
+  localStorage.setItem('cartItems', JSON.stringify(cartItems));
+
+  return (
+    <>
+      <MetaData title={'Your Cart'} />
+      {cartItems.length === 0 ? (
+        <h2 className="mt-5">Your Cart is Empty</h2>
+      ) : (
+        <div style={{ padding: '20px', backgroundColor: '#f9f9f9', minHeight: '100vh' }}>
+          <h2 style={{ textAlign: 'center', marginBottom: '20px', color: '#333' }}>
+            Your Cart: <b>{cartItems.length} items</b>
+          </h2>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '20px' }}>
+            {/* Cart Items */}
+            <div style={{ flex: 2, background: '#fff', padding: '20px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+              {cartItems.map((item) => (
+                <div
+                  key={item.product}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    borderBottom: '1px solid #ddd',
+                    padding: '10px 0',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <img src={item.image} alt={item.name} style={{ width: '80px', height: '80px', borderRadius: '8px' }} />
+                    <Link to={`/products/${item.product}`} style={{ color: '#007bff', textDecoration: 'none', fontWeight: 'bold' }}>
+                      {item.name}
+                    </Link>
+                  </div>
+                  <p style={{ color: '#333', margin: 0 }}>${item.price}</p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <button
+                      onClick={() => decreaseQty(item.product, item.quantity)}
+                      style={{
+                        border: 'none',
+                        backgroundColor: '#f5f5f5',
+                        padding: '5px 10px',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      -
+                    </button>
+                    <input
+                      type="text"
+                      value={item.quantity}
+                      readOnly
+                      style={{
+                        width: '40px',
+                        textAlign: 'center',
+                        border: '1px solid #ddd',
+                        borderRadius: '4px',
+                      }}
+                    />
+                    <button
+                      onClick={() => increaseQty(item.product, item.quantity, item.stock)}
+                      style={{
+                        border: 'none',
+                        backgroundColor: '#f5f5f5',
+                        padding: '5px 10px',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      +
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => removeCartItemHandler(item.product)}
+                    style={{
+                      border: 'none',
+                      backgroundColor: '#dc3545',
+                      color: '#fff',
+                      padding: '5px 10px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Order Summary */}
+            <div style={{ flex: 1, background: '#fff', padding: '20px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+              <h4 style={{ marginBottom: '20px', color: '#333' }}>Order Summary</h4>
+              <p style={{ display: 'flex', justifyContent: 'space-between', margin: '10px 0', color: '#555' }}>
+                Subtotal: <span>{cartItems.reduce((acc, item) => acc + Number(item.quantity), 0)} (Units)</span>
+              </p>
+              <p style={{ display: 'flex', justifyContent: 'space-between', margin: '10px 0', color: '#555' }}>
+                Est. total: <span>${cartItems.reduce((acc, item) => acc + item.quantity * item.price, 0).toFixed(2)}</span>
+              </p>
+              <button
+                onClick={checkoutHandler}
+                style={{
+                  width: '100%',
+                  backgroundColor: '#007bff',
+                  color: '#fff',
+                  border: 'none',
+                  padding: '10px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  marginTop: '20px',
+                }}
+              >
+                Proceed to Checkout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default Cart;

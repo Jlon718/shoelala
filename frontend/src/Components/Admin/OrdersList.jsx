@@ -1,25 +1,31 @@
-import React, { Fragment, useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { MDBDataTable } from 'mdbreact'
-import MetaData from '../Layout/MetaData'
-import Loader from '../Layout/Loader'
-import Sidebar from './Sidebar'
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Box, Typography, IconButton, Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Button } from '@mui/material';
+import { Delete, Visibility } from '@mui/icons-material';
+import MetaData from '../Layout/MetaData';
+import Loader from '../Layout/Loader';
+import Sidebar from './SideBar';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getToken } from '../../utils/helpers'
-import axios from 'axios'
+import { getToken } from '../../utils/helpers';
+import axios from 'axios';
+
 const OrdersList = () => {
     let navigate = useNavigate();
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState('')
-    const [allOrders, setAllOrders] = useState([])
-    const [isDeleted, setIsDeleted] = useState(false)
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+    const [allOrders, setAllOrders] = useState([]);
+    const [isDeleted, setIsDeleted] = useState(false);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+
     const errMsg = (message = '') => toast.error(message, {
         position: 'bottom-right'
     });
     const successMsg = (message = '') => toast.success(message, {
         position: 'bottom-right'
     });
+
     const listOrders = async () => {
         try {
             const config = {
@@ -27,14 +33,15 @@ const OrdersList = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${getToken()}`
                 }
-            }
-            const { data } = await axios.get(`${import.meta.env.VITE_API}/admin/orders`, config)
-            setAllOrders(data.orders)
-            setLoading(false)
+            };
+            const { data } = await axios.get(`${import.meta.env.VITE_API}/admin/orders`, config);
+            setAllOrders(data.orders);
+            setLoading(false);
         } catch (error) {
-            setError(error.response.data.message)
+            setError(error.response.data.message);
         }
-    }
+    };
+
     const deleteOrder = async (id) => {
         try {
             const config = {
@@ -42,101 +49,108 @@ const OrdersList = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${getToken()}`
                 }
-            }
-            const { data } = await axios.delete(`${import.meta.env.VITE_API}/admin/order/${id}`, config)
-            setIsDeleted(data.success)
-            setLoading(false)
+            };
+            const { data } = await axios.delete(`${import.meta.env.VITE_API}/admin/order/${id}`, config);
+            setIsDeleted(data.success);
+            setLoading(false);
         } catch (error) {
-            setError(error.response.data.message)
+            setError(error.response.data.message);
         }
-    }
+    };
+
     useEffect(() => {
-        listOrders()
+        listOrders();
         if (error) {
-            errMsg(error)
-            setError('')
+            errMsg(error);
+            setError('');
         }
         if (isDeleted) {
             successMsg('Order deleted successfully');
             navigate('/admin/orders');
         }
-    }, [error, isDeleted])
+    }, [error, isDeleted]);
+
     const deleteOrderHandler = (id) => {
-        deleteOrder(id)
-    }
-    const setOrders = () => {
-        const data = {
-            columns: [
-                {
-                    label: 'Order ID',
-                    field: 'id',
-                    sort: 'asc'
-                },
-                {
-                    label: 'No of Items',
-                    field: 'numofItems',
-                    sort: 'asc'
-                },
-                {
-                    label: 'Amount',
-                    field: 'amount',
-                    sort: 'asc'
-                },
-                {
-                    label: 'Status',
-                    field: 'status',
-                    sort: 'asc'
-                },
-                {
-                    label: 'Actions',
-                    field: 'actions',
-                },
-            ],
-            rows: []
-        }
-        allOrders.forEach(order => {
-            data.rows.push({
-                id: order._id,
-                numofItems: order.orderItems.length,
-                amount: `$${order.totalPrice}`,
-                status: order.orderStatus && String(order.orderStatus).includes('Delivered')
-                    ? <p style={{ color: 'green' }}>{order.orderStatus}</p>
-                    : <p style={{ color: 'red' }}>{order.orderStatus}</p>,
-                actions: <>
-                    <Link to={`/admin/order/${order._id}`} className="btn btn-primary py-1 px-2">
-                        <i className="fa fa-eye"></i>
-                    </Link>
-                    <button className="btn btn-danger py-1 px-2 ml-2" onClick={() => deleteOrderHandler(order._id)}>
-                        <i className="fa fa-trash"></i>
-                    </button>
-                </>
-            })
-        })
-        return data;
-    }
+        deleteOrder(id);
+    };
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
     return (
         <>
             <MetaData title={'All Orders'} />
-            <div className="row">
-                <div className="col-12 col-md-2">
+            <Box sx={{ display: 'flex', background: 'linear-gradient(to bottom, #7C93C3, #55679C)', minHeight: '100vh' }}>
+                <Box sx={{ width: '250px' }}>
                     <Sidebar />
-                </div>
-                <div className="col-12 col-md-10">
-                    <>
-                        <h1 className="my-5">All Orders</h1>
+                </Box>
+                <Box sx={{ flexGrow: 1, p: 3 }}>
+                    <Container maxWidth="lg">
+                        <Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold', textAlign: 'center', color: '#1E2A5E', fontFamily: 'Roboto, sans-serif' }}>
+                            All Orders
+                        </Typography>
                         {loading ? <Loader /> : (
-                            <MDBDataTable
-                                data={setOrders()}
-                                className="px-3"
-                                bordered
-                                striped
-                                hover
-                            />
+                            <Paper elevation={3} sx={{ p: 2, backgroundColor: '#7c93c3' }}>
+                                <TableContainer>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell sx={{ backgroundColor: '#7C93C3', color: '#FFFFFF', fontFamily: 'Roboto, sans-serif' }}>Order ID</TableCell>
+                                                <TableCell sx={{ backgroundColor: '#7C93C3', color: '#FFFFFF', fontFamily: 'Roboto, sans-serif' }}>No of Items</TableCell>
+                                                <TableCell sx={{ backgroundColor: '#7C93C3', color: '#FFFFFF', fontFamily: 'Roboto, sans-serif' }}>Amount</TableCell>
+                                                <TableCell sx={{ backgroundColor: '#7C93C3', color: '#FFFFFF', fontFamily: 'Roboto, sans-serif' }}>Status</TableCell>
+                                                <TableCell sx={{ backgroundColor: '#7C93C3', color: '#FFFFFF', fontFamily: 'Roboto, sans-serif' }}>Actions</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {allOrders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((order) => (
+                                                <TableRow key={order._id}>
+                                                    <TableCell sx={{ backgroundColor: '#ffffff', color: '#1E2A5E', fontFamily: 'Roboto, sans-serif' }}>{order._id}</TableCell>
+                                                    <TableCell sx={{ backgroundColor: '#ffffff', color: '#1E2A5E', fontFamily: 'Roboto, sans-serif' }}>{order.orderItems.length}</TableCell>
+                                                    <TableCell sx={{ backgroundColor: '#ffffff', color: '#1E2A5E', fontFamily: 'Roboto, sans-serif' }}>${order.totalPrice}</TableCell>
+                                                    <TableCell sx={{ backgroundColor: '#ffffff', color: order.orderStatus === 'Delivered' ? 'green' : 'red', fontFamily: 'Roboto, sans-serif' }}>
+                                                        {order.orderStatus}
+                                                    </TableCell>
+                                                    <TableCell sx={{ backgroundColor: '#ffffff', color: '#1E2A5E', fontFamily: 'Roboto, sans-serif' }}>
+                                                        <IconButton component={Link} to={`/admin/order/${order._id}`} color="primary">
+                                                            <Visibility />
+                                                        </IconButton>
+                                                        <IconButton color="secondary" onClick={() => deleteOrderHandler(order._id)}>
+                                                            <Delete />
+                                                        </IconButton>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                                <TablePagination
+                                    rowsPerPageOptions={[5, 10, 25]}
+                                    component="div"
+                                    count={allOrders.length}
+                                    rowsPerPage={rowsPerPage}
+                                    page={page}
+                                    onPageChange={handleChangePage}
+                                    onRowsPerPageChange={handleChangeRowsPerPage}
+                                    sx={{
+                                        backgroundColor: '#7C93C3',
+                                        color: '#FFFFFF',
+                                        fontFamily: 'Roboto, sans-serif',
+                                    }}
+                                />
+                            </Paper>
                         )}
-                    </>
-                </div>
-            </div>
+                    </Container>
+                </Box>
+            </Box>
         </>
-    )
-}
-export default OrdersList
+    );
+};
+
+export default OrdersList;

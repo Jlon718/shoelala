@@ -1,248 +1,285 @@
-import React, { Fragment, useState, useEffect } from 'react'
-import MetaData from '../Layout/MetaData'
-import Sidebar from './Sidebar'
+import React, { useState, useEffect } from 'react';
+import { Box, TextField, Button, Typography, Grid } from '@mui/material';
+import Sidebar from './SideBar'; // Assuming you have the Sidebar component in the same directory
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'
+import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { getToken } from '../../utils/helpers';
+import shoelalaImage from '../../img/shoesbg.avif'; // Ensure this path is correct
+
 const UpdateProduct = () => {
-    const [name, setName] = useState('');
-    const [price, setPrice] = useState(0);
-    const [description, setDescription] = useState('');
-    const [category, setCategory] = useState('');
-    const [brand, setBrand] = useState('');
-    const [stock, setStock] = useState(0);
-    const [seller, setSeller] = useState('');
-    const [images, setImages] = useState([]);
-    const [oldImages, setOldImages] = useState([]);
-    const [imagesPreview, setImagesPreview] = useState([])
-    const [error, setError] = useState('')
-    const [product, setProduct] = useState({})
-    const [loading, setLoading] = useState(true)
-    const [updateError, setUpdateError] = useState('')
-    const [isUpdated, setIsUpdated] = useState(false)
-    const categories = [
-        'Electronics',
-        'Cameras',
-        'Laptops',
-        'Accessories',
-        'Headphones',
-        'Food',
-        "Books",
-        'Clothes/Shoes',
-        'Beauty/Health',
-        'Sports',
-        'Outdoor',
-        'Home'
-    ]
-    let { id } = useParams();
-    let navigate = useNavigate();
-    const errMsg = (message = '') => toast.error(message, {
-        position: 'bottom-left'
+  const [name, setName] = useState('');
+  const [price, setPrice] = useState(0);
+  const [description, setDescription] = useState('');
+  const [category, setCategory] = useState('');
+  const [brand, setBrand] = useState('');
+  const [stock, setStock] = useState(0);
+  const [seller, setSeller] = useState('');
+  const [images, setImages] = useState([]);
+  const [oldImages, setOldImages] = useState([]);
+  const [imagesPreview, setImagesPreview] = useState([]);
+  const [error, setError] = useState('');
+  const [product, setProduct] = useState({});
+  const [isUpdated, setIsUpdated] = useState(false);
+
+  const categories = [
+    'Electronics',
+    'Cameras',
+    'Laptops',
+    'Accessories',
+    'Headphones',
+    'Food',
+    'Books',
+    'Clothes/Shoes',
+    'Beauty/Health',
+    'Sports',
+    'Outdoor',
+    'Home',
+  ];
+
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const fetchProductDetails = async (id) => {
+    try {
+      const { data } = await axios.get(`${import.meta.env.VITE_API}/product/${id}`);
+      setProduct(data.product);
+      setName(data.product.name);
+      setPrice(data.product.price);
+      setDescription(data.product.description);
+      setCategory(data.product.category);
+      setBrand(data.product.brand);
+      setSeller(data.product.seller);
+      setStock(data.product.stock);
+      setOldImages(data.product.images);
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to load product details', {
+        position: 'bottom-left',
+      });
+    }
+  };
+
+  const updateProduct = async (id, productData) => {
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${getToken()}`,
+        },
+      };
+      await axios.put(`${import.meta.env.VITE_API}/admin/product/${id}`, productData, config);
+      setIsUpdated(true);
+      toast.success('Product updated successfully!', { position: 'bottom-right' });
+      navigate('/product/new');
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to update product', {
+        position: 'bottom-left',
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (product && product._id !== id) {
+      fetchProductDetails(id);
+    }
+  }, [id, product]);
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.set('name', name);
+    formData.set('price', price);
+    formData.set('description', description);
+    formData.set('category', category);
+    formData.set('stock', stock);
+    formData.set('brand', brand);
+    formData.set('seller', seller);
+
+    images.forEach((image) => formData.append('images', image));
+
+    updateProduct(product._id, formData);
+  };
+
+  const onChange = (e) => {
+    const files = Array.from(e.target.files);
+    setImages([]);
+    setOldImages([]);
+    setImagesPreview([]);
+
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (reader.readyState === 2) {
+          setImagesPreview((old) => [...old, reader.result]);
+          setImages((old) => [...old, file]);
+        }
+      };
+      reader.readAsDataURL(file);
     });
-    const successMsg = (message = '') => toast.success(message, {
-        position: 'bottom-right'
-    });
-    const getProductDetails =  async (id) => {
-        try {
-           const { data } = await axios.get(`${import.meta.env.VITE_API}/product/${id}`)
-           setProduct(data.product)
-           setLoading(false)
-           
-        } catch (error) {
-            setError(error.response.data.message)
-            
-        }
-    }
-      
-    const updateProduct = async (id, productData)  => {
-        try {
-           
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json', 
-                    'Authorization': `Bearer ${getToken()}`
-                }
-            }
-            const { data } = await axios.put(`${import.meta.env.VITE_API}/admin/product/${id}`, productData, config)
-            setIsUpdated(data.success)
-           
-        } catch (error) {
-            setUpdateError(error.response.data.message)
-            
-        }
-    }
-    useEffect(() => {
-        if (product && product._id !== id) {
-            getProductDetails(id)
-        } else {
-            setName(product.name);
-            setPrice(product.price);
-            setDescription(product.description);
-            setCategory(product.category);
-            setBrand(product.brand);
-            setSeller(product.seller);
-            setStock(product.stock)
-            setOldImages(product.images)
-        }
-        if (error) {
-            errMsg(error)
-            
-        }
-        if (updateError) {
-            errMsg(updateError);
-           
-        }
-        if (isUpdated) {
-            navigate('/product/new');
-            successMsg('Product updated successfully');
-           
-        }
-    }, [error, isUpdated, updateError, product, id])
-    const submitHandler = (e) => {
-        e.preventDefault();
-        const formData = new FormData();
-        formData.set('name', name);
-        formData.set('price', price);
-        formData.set('description', description);
-        formData.set('category', category);
-        formData.set('stock', stock);
-        formData.set('brand', brand);
-        formData.set('seller', seller);
-        images.forEach(image => {
-            formData.append('images', image)
-        })
-        updateProduct(product._id, formData)
-    }
-    const onChange = e => {
-        const files = Array.from(e.target.files)
-        setImagesPreview([]);
-        setImages([])
-        setOldImages([])
-        files.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = () => {
-                if (reader.readyState === 2) {
-                    setImagesPreview(oldArray => [...oldArray, reader.result])
-                    setImages(oldArray => [...oldArray, reader.result])
-                }
-            }
-            reader.readAsDataURL(file)
-        })
-    }
-    return (
-        <>
-            <MetaData title={'Update Product'} />
-            <div className="row">
-                <div className="col-12 col-md-2">
+  };
+
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        minHeight: '100vh',
+        background: 'linear-gradient(to top, #F3F3E0, #133E87, #608BC1, #CBDCEB)',
+      }}
+    >
+      {/* Sidebar */}
+      <Box sx={{ width: '250px' }}>
                     <Sidebar />
-                </div>
-                <div className="col-12 col-md-10">
-                    <>
-                        <div className="wrapper my-5">
-                            <form className="shadow-lg" onSubmit={submitHandler} encType='multipart/form-data'>
-                                <h1 className="mb-4">Update Product</h1>
-                                <div className="form-group">
-                                    <label htmlFor="name_field">Name</label>
-                                    <input
-                                        type="text"
-                                        id="name_field"
-                                        className="form-control"
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="price_field">Price</label>
-                                    <input
-                                        type="text"
-                                        id="price_field"
-                                        className="form-control"
-                                        value={price}
-                                        onChange={(e) => setPrice(e.target.value)}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="description_field">Description</label>
-                                    <textarea className="form-control" id="description_field" rows="8" value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="category_field">Category</label>
-                                    <input
-                                        type="text"
-                                        id="category"
-                                        className="form-control"
-                                        value={category}
-                                        onChange={(e) => setCategory(e.target.value)}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="category_field">Brand</label>
-                                    <input
-                                        type="text"
-                                        id="brand"
-                                        className="form-control"
-                                        value={brand}
-                                        onChange={(e) => setBrand(e.target.value)}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="stock_field">Stock</label>
-                                    <input
-                                        type="number"
-                                        id="stock_field"
-                                        className="form-control"
-                                        value={stock}
-                                        onChange={(e) => setStock(e.target.value)}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="seller_field">Seller Name</label>
-                                    <input
-                                        type="text"
-                                        id="seller_field"
-                                        className="form-control"
-                                        value={seller}
-                                        onChange={(e) => setSeller(e.target.value)}
-                                    />
-                                </div>
-                                <div className='form-group'>
-                                    <label>Images</label>
-                                    <div className='custom-file'>
-                                        <input
-                                            type='file'
-                                            name='images'
-                                            className='custom-file-input'
-                                            id='customFile'
-                                            onChange={onChange}
-                                            multiple
-                                        />
-                                        <label className='custom-file-label' htmlFor='customFile'>
-                                            Choose Images
-                                        </label>
-                                    </div>
-                                    {oldImages && oldImages.map(img => (
-                                        <img key={img} src={img.url} alt={img.url} className="mt-3 mr-2" width="55" height="52" />
-                                    ))}
-                                    {imagesPreview.map(img => (
-                                        <img src={img} key={img} alt="Images Preview" className="mt-3 mr-2" width="55" height="52" />
-                                    ))}
-                                </div>
-                                <button
-                                    id="login_button"
-                                    type="submit"
-                                    className="btn btn-block py-3"
-                                    disabled={loading ? true : false}
-                                >
-                                    UPDATE
-                                </button>
-                            </form>
-                        </div>
-                    </>
-                </div>
-            </div>
-        </>
-    )
-}
-export default UpdateProduct
+      </Box>
+
+      {/* Main Content */}
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Box
+          component="form"
+          onSubmit={submitHandler}
+          sx={{
+            maxWidth: '600px',
+            width: '100%',
+            padding: 4,
+            borderRadius: '10px',
+            boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.2)',
+            backgroundColor: 'rgb(35 47 62, 0.9)', 
+            backdropFilter: 'blur(10px)',
+          }}
+        >
+          <Typography
+            variant="h4"
+            sx={{
+              marginBottom: 3,
+              textAlign: 'center',
+              color: '#133E87',
+              fontWeight: 'bold',
+            }}
+          >
+            Update Product
+          </Typography>
+
+          <TextField
+            label="Product Name"
+            fullWidth
+            sx={{ mb: 2 }}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+
+          <TextField
+            label="Price"
+            type="number"
+            fullWidth
+            sx={{ mb: 2 }}
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+          />
+
+          <TextField
+            label="Description"
+            multiline
+            rows={4}
+            fullWidth
+            sx={{ mb: 2 }}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+
+          <TextField
+            label="Category"
+            fullWidth
+            sx={{ mb: 2 }}
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          />
+
+          <TextField
+            label="Brand"
+            fullWidth
+            sx={{ mb: 2 }}
+            value={brand}
+            onChange={(e) => setBrand(e.target.value)}
+          />
+
+          <TextField
+            label="Stock"
+            type="number"
+            fullWidth
+            sx={{ mb: 2 }}
+            value={stock}
+            onChange={(e) => setStock(e.target.value)}
+          />
+
+          <TextField
+            label="Seller Name"
+            fullWidth
+            sx={{ mb: 2 }}
+            value={seller}
+            onChange={(e) => setSeller(e.target.value)}
+          />
+
+          <Box sx={{ mb: 2 }}>
+            <Typography sx={{ mb: 1, color: '#4A628A', fontWeight: 'bold' }}>
+              Upload Images
+            </Typography>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={onChange}
+              style={{ display: 'block' }}
+            />
+          </Box>
+
+          <Box sx={{ mb: 2, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+            {oldImages.map((img, index) => (
+              <img
+                key={index}
+                src={img.url}
+                alt={`Old Preview ${index}`}
+                style={{ width: '60px', height: '60px', borderRadius: '5px' }}
+              />
+            ))}
+            {imagesPreview.map((img, index) => (
+              <img
+                key={index}
+                src={img}
+                alt={`Preview ${index}`}
+                style={{ width: '60px', height: '60px', borderRadius: '5px' }}
+              />
+            ))}
+          </Box>
+
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{
+              bgcolor: '#4A628A',
+              color: '#FFF',
+              ':hover': { bgcolor: '#2E4B6A' },
+              py: 1.5,
+              fontWeight: 'bold',
+              fontSize: '16px',
+              transition: 'background-color 0.3s ease',
+            }}
+          >
+            UPDATE
+          </Button>
+        </Box>
+      </Box>
+    </Box>
+  );
+};
+
+export default UpdateProduct;
