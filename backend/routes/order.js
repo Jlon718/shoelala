@@ -1,9 +1,11 @@
 const express = require('express')
 const router = express.Router();
-const { newOrder, getMonthlySales, allOrders, deleteOrder, updateOrder, getSingleOrder, myOrders } = require('../controllers/order')
+const { newOrder, getMonthlySales, allOrders, deleteOrder, updateOrder, getSingleOrder, myOrders, totalOrders, getGrossSales } = require('../controllers/order')
 const { isAuthenticatedUser } = require('../middlewares/auth');
 
 router.post('/order/new', isAuthenticatedUser, newOrder);
+router.get('/total/gross-sales', getGrossSales);
+router.get('/total/orders', totalOrders);
 router.get('/admin/monthly-sales', getMonthlySales);
 router.get('/admin/orders/', isAuthenticatedUser, allOrders);
 router.get('/order/:id', isAuthenticatedUser, getSingleOrder);

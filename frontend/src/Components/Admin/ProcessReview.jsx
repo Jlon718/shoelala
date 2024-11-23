@@ -1,7 +1,7 @@
 import  { useState, useEffect } from 'react'
 import { MDBDataTable } from 'mdbreact'
 import MetaData from '../Layout/MetaData'
-import Sidebar from './SideBar'
+import Sidebar from './Sidebar'
 import Toast from '../Layout/Toast'
 import Swal from 'sweetalert2'
 import { getUser, getToken, } from '../../utils/helpers'

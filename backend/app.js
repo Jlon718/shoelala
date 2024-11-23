@@ -9,6 +9,7 @@ const brands = require('./routes/brand');
 // const cookieParser = require('cookie-parser');
 const auth = require('./routes/auth');
 const order = require('./routes/order');
+const user = require('./routes/user');
 app.use(express.json({limit:'50mb'}));
 
 app.use(express.urlencoded({limit: "50mb", extended: true}));
@@ -21,5 +22,6 @@ app.use('/api/v1', sellers);
 app.use('/api/v1', brands);
 app.use('/api/v1', auth);
 app.use('/api/v1', order);
+app.use('/api/v1', user);
 
 module.exports = app

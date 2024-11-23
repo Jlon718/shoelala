@@ -18,6 +18,23 @@ exports.getProducts = async (req, res, next) => {
     }
 };
 
+exports.getAllProducts = async (req, res, next) => {
+    try {
+        const products = await Product.find();
+        res.status(200).json({
+            success: true,
+            products,
+            totalProducts: products.length
+        });
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching products'
+        });
+    }
+};
+
 // Get single product
 exports.getSingleProduct = async (req, res, next) => {
     try {

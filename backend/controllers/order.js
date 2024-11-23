@@ -134,6 +134,47 @@ exports.allOrders = async (req, res, next) => {
     })
 };
 
+exports.totalOrders = async (req, res, next) => {
+    try {
+        const orders = await Order.find();
+        res.status(200).json({
+            success: true,
+            orders,
+            totalOrders: orders.length
+        });
+    } catch (error) {
+        console.error('Error fetching orders:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching orders'
+        });
+    }
+};
+
+exports.getGrossSales = async (req, res, next) => {
+    try {
+        const orders = await Order.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalSales: { $sum: "$totalPrice" }
+                }
+            }
+        ]);
+
+        res.status(200).json({
+            success: true,
+            totalSales: orders.length > 0 ? orders[0].totalSales : 0
+        });
+    } catch (error) {
+        console.error('Error calculating gross sales:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error calculating gross sales'
+        });
+    }
+};
+
 exports.deleteOrder = async (req, res, next) => {
     const order = await Order.findByIdAndDelete(req.params.id)
     if (!order) {
