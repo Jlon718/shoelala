@@ -8,7 +8,7 @@ import '../../productdetails.css';
 import axios from 'axios';
 import { getUser, getToken, successMsg, errMsg } from '../../utils/helpers'
 import ListReviews from '../Review/ListReviews';
-import { Filter } from 'bad-words' // Import as a class
+// import { Filter } from 'bad-words' 
 
 
 

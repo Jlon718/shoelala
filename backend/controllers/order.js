@@ -24,7 +24,7 @@ exports.newOrder = async (req, res, next) => {
         paidAt: Date.now(),
         user: req.user.id
     })
-    const productList = orderItems.map(item => `${item.name} - ${item.quantity} x $${item.price}`).join('\n');
+    const productList = orderItems.map(item => `${item.name} - ${item.quantity} x ₱${item.price}`).join('\n');
         const message = `
             Hi ${req.user.name},
 
@@ -33,15 +33,15 @@ exports.newOrder = async (req, res, next) => {
             Products/Services:
             ${productList}
 
-            Subtotal: $${itemsPrice}
-            Shipping: $${shippingPrice}
-            Tax: $${taxPrice}
-            Grand Total: $${totalPrice}
+            Subtotal: ₱${itemsPrice}
+            Shipping: ₱${shippingPrice}
+            Tax: ₱${taxPrice}
+            Grand Total: ₱${totalPrice}
 
             Thank you for shopping with us!
 
             Best regards,
-            YourAppName Team
+            Shoelala Team
         `;
 
         // Send email

@@ -29,7 +29,7 @@ const Product = ({ product }) => {
           </Typography>
         </div>
         <Typography variant="h6" sx={{ color: 'primary.main', marginTop: 2 }}>
-          ${product.price}
+          ₱{product.price}
         </Typography>
       </CardContent>
       <CardActions>
