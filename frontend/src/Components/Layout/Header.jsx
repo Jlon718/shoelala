@@ -5,10 +5,10 @@ import LoginIcon from '@mui/icons-material/Login';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import shoelala from '../../img/shoelala.png';
+import Search from './Search';
 
 const Header = ({ cartItems }) => {
-  const user = JSON.parse(localStorage.getItem('user')); // Assuming user info is stored in localStorage
-  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user')); 
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleMenuOpen = (event) => {
@@ -36,6 +36,7 @@ const Header = ({ cartItems }) => {
           Shoelala
         </Typography>
         {/* Buttons */}
+        <Search />
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
           {user ? (
             <>
