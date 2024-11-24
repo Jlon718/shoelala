@@ -90,10 +90,21 @@ exports.loginUser = async (req, res, next) => {
 
 exports.getUserProfile = async (req, res, next) => {
     try {
-        const user = await User.findById(req.user.id
-        );
-        if (!user) { return res.status(404).json({ success: false, message: 'User not found' }); }
-        res.status(200).json({ success: true, user });
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        res.status(200).json({
+            success: true,
+            user: {
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                address: user.address,
+                avatar: user.avatar, // Ensure avatar includes `url`
+            },
+        });
     } catch (error) {
         console.error('Error fetching user profile:', error);
         res.status(500).json({ success: false, message: 'Error fetching user profile' });

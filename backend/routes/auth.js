@@ -6,6 +6,7 @@ const {isAuthenticatedUser} = require('../middlewares/auth');
 
 router.post('/register', upload.single('avatar'), registerUser);
 router.post('/login', loginUser);
-router.post('/profile', isAuthenticatedUser,getUserProfile);
-router.route('/profile/update').put(isAuthenticatedUser, updateUserProfile);
+router.get('/profile', isAuthenticatedUser,getUserProfile);
+// router.get('/profile', isAuthenticatedUser,getUserProfile);
+router.put('/profile/update', isAuthenticatedUser, updateUserProfile);
 module.exports = router;
