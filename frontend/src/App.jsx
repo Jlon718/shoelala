@@ -107,7 +107,7 @@ function App() {
           <Route path="/home" element={<Home />} exact="true" />
           <Route path="/product/:id" element={<ProductDetails cartItems={state.cartItems} addItemToCart={addItemToCart} />} exact="true" />
           <Route path="/review/product/:id" element={<ReviewProduct cartItems={state.cartItems} addItemToCart={addItemToCart} />} exact="true" />
-          <Route path="/search/:keyword" element={<Home />} exact="true" />
+          <Route path="/search/:keyword" element={<Index />} exact="true" />
           <Route path="/login" element={<Login />} exact="true" />
           <Route path="/register" element={<Register />} exact="true" />
           <Route path="/cart" element={<Cart cartItems={state.cartItems} addItemToCart={addItemToCart} removeItemFromCart={removeItemFromCart} />} exact="true" />
@@ -117,7 +117,7 @@ function App() {
           <Route path="/shipping" element={<Shipping saveShippingInfo={saveShippingInfo} />} exact="true" />
           <Route path="/confirm-order" element={<ConfirmOrder cartItems={state.cartItems} shippingInfo={state.shippingInfo} />} exact="true" />
           <Route path="/payment" element={<Payment />} exact="true" />
-          <Route path="/order-success" element={<OrderSuccess />} exact="true" />
+          <Route path="/success" element={<OrderSuccess />} exact="true" />
           <Route path="/dashboard" element={<Dashboard />} exact="true" />
           <Route path="/orders/me" element={<ListOrders />} />
           <Route path="/order/:id" element={<OrderDetails />} />

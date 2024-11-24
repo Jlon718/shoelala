@@ -140,10 +140,6 @@ const Login = () => {
             <GoogleIcon style={styles.icon} />
             Login with Gmail
           </button>
-          <button onClick={handleFacebookLogin} style={styles.facebookButton}>
-            <FacebookIcon style={styles.icon} />
-            Login with Facebook
-          </button>
         </div>
       </div>
     </div>

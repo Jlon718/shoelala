@@ -61,27 +61,32 @@ const ListOrders = () => {
                 {
                     label: 'Order ID',
                     field: 'id',
-                    sort: 'asc'
+                    sort: 'asc',
+                    width: 150
                 },
                 {
                     label: 'Num of Items',
                     field: 'numOfItems',
-                    sort: 'asc'
+                    sort: 'asc',
+                    width: 150
                 },
                 {
                     label: 'Amount',
                     field: 'amount',
-                    sort: 'asc'
+                    sort: 'asc',
+                    width: 150
                 },
                 {
                     label: 'Status',
                     field: 'status',
-                    sort: 'asc'
+                    sort: 'asc',
+                    width: 150
                 },
                 {
                     label: 'Actions',
                     field: 'actions',
-                    sort: 'asc'
+                    sort: 'asc',
+                    width: 150
                 },
             ],
             rows: []
@@ -92,17 +97,17 @@ const ListOrders = () => {
                 numOfItems: order.orderItems.length,
                 amount: `$${order.totalPrice}`,
                 status: order.orderStatus && String(order.orderStatus).includes('Delivered')
-                    ? <p style={{ color: 'green' }}>{order.orderStatus}</p>
-                    : <p style={{ color: 'red' }}>{order.orderStatus}</p>,
+                    ? <p style={{ color: '#28a745', fontWeight: 'bold' }}>{order.orderStatus}</p>
+                    : <p style={{ color: '#dc3545', fontWeight: 'bold' }}>{order.orderStatus}</p>,
                 actions: (
                     <>
-                        <Link to={`/order/${order._id}`} className="btn btn-primary">
+                        <Link to={`/order/${order._id}`} className="btn btn-primary" style={{ backgroundColor: '#6A759B', borderColor: '#6A759B' }}>
                             <i className="fa fa-eye"></i>
                         </Link>
                         {order.orderStatus === 'Delivered' && !reviewedOrders.includes(order._id) && (
                             <button 
                                 onClick={() => markAsReviewed(order._id)} 
-                                className="btn btn-success ml-2">
+                                className="btn btn-success ml-2" style={{ backgroundColor: '#28a745', borderColor: '#28a745' }}>
                                 Mark as Reviewed
                             </button>
                         )}
@@ -116,41 +121,46 @@ const ListOrders = () => {
     return (
         <>
             <MetaData title={'My Orders'} />
-            <h1 className="my-5">My Orders</h1>
-            {loading ? <Loader /> : (
-                <MDBDataTable
-                    data={setOrders(myOrdersList)}
-                    className="px-3"
-                    bordered
-                    striped
-                    hover
-                />
-            )}
+            <div className="container" style={{ backgroundColor: '#F1F6F8', padding: '2rem', borderRadius: '8px' }}>
+                <h1 className="my-5" style={{ color: '#21273D' }}>My Orders</h1>
+                {loading ? <Loader /> : (
+                    <MDBDataTable
+                        data={setOrders(myOrdersList)}
+                        className="px-3"
+                        bordered
+                        striped
+                        hover
+                        style={{ backgroundColor: '#B9D4F1', borderRadius: '8px' }}
+                    />
+                )}
 
-            <br></br>
-            <h1 className="my-5">Products to be Reviewed:</h1>
-            {loading ? <Loader /> : (
-                <MDBDataTable
-                    data={setOrders(getOrdersToBeReviewed())}
-                    className="px-3"
-                    bordered
-                    striped
-                    hover
-                />
-            )}
+                <br />
+                <h1 className="my-5" style={{ color: '#21273D' }}>Products to be Reviewed:</h1>
+                {loading ? <Loader /> : (
+                    <MDBDataTable
+                        data={setOrders(getOrdersToBeReviewed())}
+                        className="px-3"
+                        bordered
+                        striped
+                        hover
+                        style={{ backgroundColor: '#B9D4F1', borderRadius: '8px' }}
+                    />
+                )}
 
-            <h1 className="my-5">My Reviews:</h1>
-            {loading ? <Loader /> : (
-                <MDBDataTable
-                    data={setOrders(getReviewedOrders())}
-                    className="px-3"
-                    bordered
-                    striped
-                    hover
-                />
-            )}
+                <h1 className="my-5" style={{ color: '#21273D' }}>My Reviews:</h1>
+                {loading ? <Loader /> : (
+                    <MDBDataTable
+                        data={setOrders(getReviewedOrders())}
+                        className="px-3"
+                        bordered
+                        striped
+                        hover
+                        style={{ backgroundColor: '#B9D4F1', borderRadius: '8px' }}
+                    />
+                )}
+            </div>
         </>
     )
 }
 
-export default ListOrders
+export default ListOrders;

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Drawer, List, ListItem, ListItemText, Button, Typography, Card, CardMedia, CardContent, TextField } from "@mui/material";
+import { List, ListItem, ListItemText, Button, Typography, Card, CardMedia, CardContent, TextField } from "@mui/material";
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
+  const navigate = useNavigate();
   const [profile, setProfile] = useState({
     name: "",
     email: "",
@@ -12,40 +14,6 @@ const Profile = () => {
   });
 
   useEffect(() => {
-    // const fetchProfile = async () => {
-    //   try {
-    //     const response = await fetch('http://localhost:4001/api/v1/profile', {
-    //       method: 'GET',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //         'Authorization': `Bearer ${localStorage.getItem('token')}`
-    //       }
-    //     });
-
-    //     if (!response.ok) {
-    //       throw new Error(`HTTP error! status: ${response.status}`);
-    //     }
-
-    //     const data = await response.json();
-    //     if (data.success) {
-    //       setProfile({
-    //         name: data.user.name,
-    //         email: data.user.email,
-    //         phone: data.user.phone,
-    //         address: data.user.address,
-    //         avatar: data.user.avatar,
-    //         password: "" // Do not set the password
-    //       });
-    //     } else {
-    //       alert("Failed to fetch profile.");
-    //     }
-    //   } catch (error) {
-    //     console.error("Error fetching profile:", error);
-    //     alert("Failed to fetch profile.");
-    //   }
-    // };
-
-    // fetchProfile();
     const fetchProfile = async () => {
       try {
           const response = await fetch('http://localhost:4001/api/v1/profile', {
@@ -121,30 +89,6 @@ const Profile = () => {
 
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
-      {/* Sidebar */}
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: 240,
-          flexShrink: 0,
-          [`& .MuiDrawer-paper`]: { width: 240, boxSizing: "border-box" },
-        }}
-      >
-        <div style={{ padding: "20px" }}>
-          <Typography variant="h5" fontWeight="bold">
-            MY PROFILE
-          </Typography>
-        </div>
-        <List>
-          {["My Profile", "My Orders", "My Reviews"].map((text) => (
-            <ListItem button key={text}>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-
-      {/* Main Profile Section */}
       <main style={{ flex: 1, padding: "20px", backgroundColor: "#f9f9f9" }}>
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
@@ -155,9 +99,6 @@ const Profile = () => {
             Hi, {profile.name}
           </Button>
         </div>
-        <Typography variant="subtitle1" color="textSecondary">
-          Founding member | 10+ nights booked and hosted | Their home is a popular pick
-        </Typography>
 
         {/* Profile Content */}
         <div style={{ marginTop: "20px", display: "flex", gap: "20px" }}>
@@ -178,10 +119,7 @@ const Profile = () => {
             <Card>
               <CardContent>
                 <Typography variant="h5" fontWeight="bold">
-                  About us
-                </Typography>
-                <Typography variant="body1" color="textSecondary" style={{ marginTop: "10px" }}>
-                  Live in SF, work remotely, but love Palm Springs! Parents to 2 young kiddos.
+                  About Me
                 </Typography>
                 <div style={{ marginTop: "20px" }}>
                   <Typography variant="body1" color="textSecondary">
@@ -236,15 +174,6 @@ const Profile = () => {
               label="Address"
               name="address"
               value={profile.address}
-              onChange={handleChange}
-              variant="outlined"
-              fullWidth
-            />
-            <TextField
-              label="Password"
-              name="password"
-              type="password"
-              value={profile.password}
               onChange={handleChange}
               variant="outlined"
               fullWidth
