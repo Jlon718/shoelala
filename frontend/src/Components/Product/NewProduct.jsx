@@ -3,12 +3,11 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import MUIDataTable from "mui-datatables";
-import { Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, Checkbox, FormControlLabel, Box, Grid } from '@mui/material';
+import { Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, Box, Grid, Typography } from '@mui/material';
 import Sidebar from '../Admin/SideBar';
 
 const NewProduct = () => {
     const [products, setProducts] = useState([]);
-    const [selectedProducts, setSelectedProducts] = useState([]);
     const navigate = useNavigate();
     const [product, setProduct] = useState({
         name: '',
@@ -29,12 +28,12 @@ const NewProduct = () => {
 
     const fetchProducts = async () => {
         try {
-          const { data } = await axios.get(`${import.meta.env.VITE_API}/products`);
-          setProducts(data.products);
+            const { data } = await axios.get(`${import.meta.env.VITE_API}/products`);
+            setProducts(data.products);
         } catch (error) {
-          toast.error('Error fetching products');
+            toast.error('Error fetching products');
         }
-      };
+    };
 
     const handleChange = (e) => {
         setProduct({ ...product, [e.target.name]: e.target.value });
@@ -77,31 +76,6 @@ const NewProduct = () => {
         setProduct(product);
         setIsEdit(true);
         setOpen(true);
-    };
-
-    const handleDelete = async (id) => {
-        try {
-            await axios.delete(`${import.meta.env.VITE_API}/product/${id}`);
-            toast.success('Product deleted successfully');
-            fetchProducts();
-        } catch (error) {
-            toast.error('Error deleting product');
-        }
-    };
-
-    const handleBulkDelete = async () => {
-        try {
-            await axios.post(`${import.meta.env.VITE_API}/products/bulk-delete`, { ids: selectedProducts });
-            toast.success('Products deleted successfully');
-            fetchProducts();
-        } catch (error) {
-            toast.error('Error deleting products');
-        }
-    };
-
-    const handleSelect = (rowsSelected) => {
-        const selectedIds = rowsSelected.map(row => products[row.index]._id);
-        setSelectedProducts(selectedIds);
     };
 
     const columns = [
@@ -170,10 +144,17 @@ const NewProduct = () => {
                 customBodyRender: (value, tableMeta, updateValue) => {
                     const product = products[tableMeta.rowIndex];
                     return (
-                        <>
-                            <Button onClick={() => navigate(`/admin/product/${product._id}`)}>Edit</Button>
-                            <Button onClick={() => handleDelete(product._id)}>Delete</Button>
-                        </>
+                        <Button
+                            onClick={() => navigate(`/admin/product/${product._id}`)}
+                            variant="contained"
+                            sx={{
+                                bgcolor: '#608BC1',
+                                color: '#F3F3E0',
+                                ':hover': { bgcolor: '#CBDCEB' }
+                            }}
+                        >
+                            Edit
+                        </Button>
                     );
                 }
             }
@@ -182,19 +163,18 @@ const NewProduct = () => {
 
     const options = {
         filterType: 'checkbox',
-        onRowSelectionChange: (rowsSelected, allRows) => handleSelect(allRows),
         expandableRows: true,
         renderExpandableRow: (rowData, rowMeta) => {
             const product = products[rowMeta.dataIndex];
             return (
                 <tr>
                     <td colSpan={6}>
-                        <div>
-                            <p><strong>Images:</strong></p>
+                        <Box sx={{ p: 2, bgcolor: '#CBDCEB' }}>
+                            <Typography variant="body1"><strong>Images:</strong></Typography>
                             {product.images.map((image, index) => (
-                                <img key={index} src={image.url} alt={product.name} width="100" />
+                                <img key={index} src={image.url} alt={product.name} width="100" style={{ margin: '10px' }} />
                             ))}
-                        </div>
+                        </Box>
                     </td>
                 </tr>
             );
@@ -202,101 +182,39 @@ const NewProduct = () => {
     };
 
     return (
-        <>
-         <Box sx={{ display: 'flex' }}>
-         <Grid item xs={12} md={2}>
+        <Box sx={{ display: 'flex', bgcolor: '#133E87', minHeight: '100vh' }}>
+            <Box sx={{ width: '250px' }}>
                     <Sidebar />
-                </Grid>
-            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-            <Button onClick={() => navigate('/admin/product/new/form')}>Add Product</Button>
-            <Button onClick={handleBulkDelete} disabled={selectedProducts.length === 0}>Delete Selected</Button>
-            <MUIDataTable
-                title={"Products"}
-                data={products}
-                columns={columns}
-                options={options}
-            />
-            <Dialog open={open} onClose={() => setOpen(false)}>
-                <DialogTitle>{isEdit ? "Edit Product" : "Add Product"}</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        margin="dense"
-                        name="name"
-                        label="Name"
-                        type="text"
-                        fullWidth
-                        value={product.name}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        margin="dense"
-                        name="price"
-                        label="Price"
-                        type="number"
-                        fullWidth
-                        value={product.price}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        margin="dense"
-                        name="description"
-                        label="Description"
-                        type="text"
-                        fullWidth
-                        value={product.description}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        margin="dense"
-                        name="stock"
-                        label="Stock"
-                        type="number"
-                        fullWidth
-                        value={product.stock}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        margin="dense"
-                        name="category"
-                        label="Category"
-                        type="text"
-                        fullWidth
-                        value={product.category}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        margin="dense"
-                        name="brand"
-                        label="Brand"
-                        type="text"
-                        fullWidth
-                        value={product.brand}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        margin="dense"
-                        name="seller"
-                        label="Seller"
-                        type="text"
-                        fullWidth
-                        value={product.seller}
-                        onChange={handleChange}
-                    />
-                    <input
-                        type="file"
-                        name="images"
-                        multiple
-                        onChange={handleImageChange}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setOpen(false)}>Cancel</Button>
-                    <Button onClick={handleSubmit}>{isEdit ? "Update" : "Create"}</Button>
-                </DialogActions>
-            </Dialog>
+            </Box>
+            <Box
+                component="main"
+                sx={{
+                    width: '100%',
+                    bgcolor: '#608BC1',
+                    borderRadius: '10px',
+                    margin: '20px',
+                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
+                }}
+            >
+                <Button
+                    onClick={() => navigate('/admin/product/new/form')}
+                    sx={{
+                        bgcolor: '#133E87',
+                        color: '#F3F3E0',
+                        mb: 2,
+                        ':hover': { bgcolor: '#608BC1' }
+                    }}
+                >
+                    Add Product
+                </Button>
+                <MUIDataTable
+                    title={"Products"}
+                    data={products}
+                    columns={columns}
+                    options={options}
+                />
             </Box>
         </Box>
-        </>
     );
 };
 
