@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Button, Box, Badge, Menu, MenuItem, InputAdornment, TextField } from '@mui/material';
 import { Link } from 'react-router-dom';
 import LoginIcon from '@mui/icons-material/Login';
@@ -78,7 +78,7 @@ const Header = ({ cartItems }) => {
               </Button>
             </Link>
           )}
-          
+
           <Link to="/cart" style={{ textDecoration: 'none' }}>
             <IconButton color="inherit" sx={{ color: '#83B4FF' }}>
               <Badge badgeContent={cartItems.length} sx={{ '& .MuiBadge-badge': { backgroundColor: '#FDFFE2', color: '#000' } }}>
