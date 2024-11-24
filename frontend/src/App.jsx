@@ -117,7 +117,7 @@ function App() {
           <Route path="/shipping" element={<Shipping saveShippingInfo={saveShippingInfo} />} exact="true" />
           <Route path="/confirm-order" element={<ConfirmOrder cartItems={state.cartItems} shippingInfo={state.shippingInfo} />} exact="true" />
           <Route path="/payment" element={<Payment />} exact="true" />
-          <Route path="/order-success" element={<OrderSuccess />} exact="true" />
+          <Route path="/success" element={<OrderSuccess />} exact="true" />
           <Route path="/dashboard" element={<Dashboard />} exact="true" />
           <Route path="/orders/me" element={<ListOrders />} />
           <Route path="/order/:id" element={<OrderDetails />} />
