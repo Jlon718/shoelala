@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Drawer, List, ListItem, ListItemText, Button, Typography, Card, CardMedia, CardContent, TextField } from "@mui/material";
-import {auth} from "../../firebaseConfig";
-import { onAuthStateChanged } from "firebase/auth";
-
 
 const Profile = () => {
   const [profile, setProfile] = useState({
@@ -17,13 +14,17 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await fetch('/api/v1/profile', {
+        const response = await fetch('http://localhost:4001/api/v1/profile', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
         const data = await response.json();
         if (data.success) {
@@ -67,6 +68,10 @@ const Profile = () => {
         body: JSON.stringify(profile)
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
       if (data.success) {
         alert("Profile updated successfully!");
@@ -109,10 +114,10 @@ const Profile = () => {
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
           <Typography variant="h4" fontWeight="bold">
-            Justine, Ben, and Ava
+            {profile.name}
           </Typography>
           <Button variant="contained" color="primary">
-            Hi, Justine
+            Hi, {profile.name}
           </Button>
         </div>
         <Typography variant="subtitle1" color="textSecondary">

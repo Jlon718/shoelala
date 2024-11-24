@@ -1,11 +1,31 @@
-import React from 'react';
-import { AppBar, Toolbar, Typography, IconButton, Button, Box, Badge } from '@mui/material';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { AppBar, Toolbar, Typography, IconButton, Button, Box, Badge, Menu, MenuItem } from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
 import LoginIcon from '@mui/icons-material/Login';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import shoelala from '../../img/shoelala.png'; 
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import shoelala from '../../img/shoelala.png';
 
 const Header = ({ cartItems }) => {
+  const user = JSON.parse(localStorage.getItem('user')); // Assuming user info is stored in localStorage
+  const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/login');
+    handleMenuClose();
+  };
+
   return (
     <AppBar position="static" sx={{ backgroundColor: '#21273D', color: '#fff' }}>
       <Toolbar>
@@ -17,22 +37,42 @@ const Header = ({ cartItems }) => {
         </Typography>
         {/* Buttons */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-          <Link to="/login" style={{ textDecoration: 'none' }}>
-            <Button
-              variant="outlined"
-              startIcon={<LoginIcon />}
-              sx={{
-                color: '#fff',
-                borderColor: '#fff',
-                '&:hover': {
-                  borderColor: '#83B4FF',
-                  color: '#83B4FF',
-                },
-              }}
-            >
-              Login
-            </Button>
-          </Link>
+          {user ? (
+            <>
+              <Typography variant="h6" sx={{ color: '#83B4FF' }}>
+                Hi! {user.name}
+              </Typography>
+              <IconButton color="inherit" onClick={handleMenuOpen}>
+                <AccountCircleIcon sx={{ color: '#83B4FF' }} />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+              >
+                <MenuItem onClick={() => { navigate('/profile'); handleMenuClose(); }}>Profile</MenuItem>
+                <MenuItem onClick={() => { navigate('/orders/me'); handleMenuClose(); }}>My Orders</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </Menu>
+            </>
+          ) : (
+            <Link to="/login" style={{ textDecoration: 'none' }}>
+              <Button
+                variant="outlined"
+                startIcon={<LoginIcon />}
+                sx={{
+                  color: '#fff',
+                  borderColor: '#fff',
+                  '&:hover': {
+                    borderColor: '#83B4FF',
+                    color: '#83B4FF',
+                  },
+                }}
+              >
+                Login
+              </Button>
+            </Link>
+          )}
           <Link to="/cart" style={{ textDecoration: 'none' }}>
             <IconButton color="inherit" sx={{ color: '#83B4FF' }}>
               <Badge badgeContent={cartItems.length} sx={{ '& .MuiBadge-badge': { backgroundColor: '#FDFFE2', color: '#000' } }}>
