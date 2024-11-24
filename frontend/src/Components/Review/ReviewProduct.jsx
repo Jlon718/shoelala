@@ -111,6 +111,7 @@ const ReviewProduct = ({ cartItems, addItemToCart }) => {
             const reviewData = {
                 rating,
                 comment: filteredComment,
+                productId: id
             };
             const config = {
                 headers: {

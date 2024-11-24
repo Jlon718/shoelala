@@ -3,7 +3,7 @@ const router = express.Router();
 const { newOrder, getMonthlySales, allOrders, deleteOrder, updateOrder, getSingleOrder, myOrders, totalOrders, getGrossSales } = require('../controllers/order')
 const { isAuthenticatedUser } = require('../middlewares/auth');
 
-router.post('/order/new', newOrder);
+router.post('/order/new',isAuthenticatedUser, newOrder);
 router.get('/total/gross-sales', getGrossSales);
 router.get('/total/orders', totalOrders);
 router.get('/admin/monthly-sales', getMonthlySales);

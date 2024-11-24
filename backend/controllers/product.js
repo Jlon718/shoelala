@@ -308,6 +308,14 @@ exports.createProductReview = async (req, res, next) => {
 	})
 };
 
+exports.getProductReviews = async (req, res, next) => {
+    const product = await Product.findById(req.query.id);
+    return res.status(200).json({
+        success: true,
+        reviews: product.reviews
+    })
+};
+
 exports.deleteReview = async (req, res, next) => {
     const product = await Product.findById(req.query.productId);
     const reviews = product.reviews.filter(review => review._id.toString() !== req.query.id.toString());

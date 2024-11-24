@@ -12,7 +12,7 @@ export const authenticate = (data, next) => {
 
 export const getUser = () => {
     if (typeof window !== 'undefined') {
-        const user = sessionStorage.getItem('user');
+        const user = localStorage.getItem('user');
         if (!user || user === 'undefined') {
             return null;
         }
@@ -29,12 +29,13 @@ export const getUser = () => {
 // get token from session storage
 export const getToken = () => {
     if (typeof window !== 'undefined') {
-        const token = sessionStorage.getItem('token');
+        const token = localStorage.getItem('access');
+        console.log('getToken: ', token)
         if (!token || token === 'undefined') {
             return null;
         }
         try {
-            return JSON.parse(token);
+            return token;
         } catch (error) {
             console.error('Error parsing token:', error);
             return null;
