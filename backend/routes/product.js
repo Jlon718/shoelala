@@ -3,11 +3,12 @@ const router = express.Router();
 const upload = require("../utils/multer");
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth');
 const { getProducts, getSingleProduct, newProduct, updateProduct, deleteProduct, bulkDeleteProducts, productSales, createProductReview, getProductReviews,deleteReview, getAllProducts } = require('../controllers/product');
+const { getCategory } = require('../controllers/category');
 
 router.get('/products', getProducts);
 router.get('/total/products', getAllProducts);
 router.get('/product/:id', getSingleProduct);
-router.put('/product/:id', updateProduct);
+router.put('/update/product/:id', updateProduct);
 router.delete('/product/:id', deleteProduct);
 router.post('/products/bulk-delete', bulkDeleteProducts);
 router.get('/admin/product-sales', productSales);

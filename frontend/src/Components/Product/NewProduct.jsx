@@ -111,30 +111,9 @@ const NewProduct = () => {
                 sort: true,
             }
         },
-        {
-            name: "category",
-            label: "Category",
-            options: {
-                filter: true,
-                sort: true,
-            }
-        },
-        {
-            name: "brand",
-            label: "Brand",
-            options: {
-                filter: true,
-                sort: true,
-            }
-        },
-        {
-            name: "seller",
-            label: "Seller",
-            options: {
-                filter: true,
-                sort: true,
-            }
-        },
+         { name: "category", label: "Category", options: { customBodyRender: (value) => value.name } },
+        { name: "brand", label: "Brand", options: { customBodyRender: (value) => value.name } },
+        { name: "seller", label: "Seller", options: { customBodyRender: (value) => value.name } },
         {
             name: "actions",
             label: "Actions",

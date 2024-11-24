@@ -9,4 +9,19 @@ exports.getBrand = async(req, res, next) => {
         count: brand.length,
         brand
     })
-}
+};
+
+exports.getBrands = async (req, res, next) => {
+    try {
+        const brands = await Brand.find();
+        res.status(200).json({
+            success: true,
+            brands
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Server Error'
+        });
+    }
+};

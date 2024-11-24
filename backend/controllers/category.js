@@ -9,4 +9,19 @@ exports.getCategory = async(req, res, next) => {
         count: category.length,
         category
     })
-}
+};
+
+exports.getCategories = async (req, res, next) => {
+    try {
+        const categories = await Category.find();
+        res.status(200).json({
+            success: true,
+            categories
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Server Error'
+        });
+    }
+};

@@ -3,9 +3,14 @@ const Order = require('../models/order');
 const cloudinary = require('cloudinary')
 
 // Get all products
+
+
 exports.getProducts = async (req, res, next) => {
     try {
-        const products = await Product.find();
+        const products = await Product.find()
+            .populate('category', 'name')
+            .populate('brand', 'name')
+            .populate('seller', 'name');
         res.status(200).json({
             success: true,
             products

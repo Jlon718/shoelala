@@ -1,6 +1,6 @@
 const Seller = require('../models/seller') 
 
-exports.getSellers = async (req, res, next) => {
+exports.getSeller = async (req, res, next) => {
     const sellers = await Seller.find();
     if (!sellers)
         return res.status(400).json({message: 'error loading sellers'})
@@ -9,4 +9,18 @@ exports.getSellers = async (req, res, next) => {
         count: sellers.length,
         sellers
     })
-}
+};
+exports.getSellers = async (req, res, next) => {
+    try {
+        const sellers = await Seller.find();
+        res.status(200).json({
+            success: true,
+            sellers
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Server Error'
+        });
+    }
+};
