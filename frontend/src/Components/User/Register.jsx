@@ -143,10 +143,6 @@ const Register = () => {
                     </button>
                 </form>
                 <div style={styles.socialSection}>
-                    <button onClick={handleFacebookSignUp} style={styles.facebookButton}>
-                        <FacebookIcon style={styles.icon} />
-                        Facebook
-                    </button>
                     <button onClick={handleGoogleSignUp} style={styles.gmailButton}>
                         <GoogleIcon style={styles.icon} />
                         Google

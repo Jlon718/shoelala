@@ -104,6 +104,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} exact="true" />
           <Route path="/index" element={<Index />} exact="true" />
+          <Route path="/home" element={<Home />} exact="true" />
           <Route path="/product/:id" element={<ProductDetails cartItems={state.cartItems} addItemToCart={addItemToCart} />} exact="true" />
           <Route path="/review/product/:id" element={<ReviewProduct cartItems={state.cartItems} addItemToCart={addItemToCart} />} exact="true" />
           <Route path="/search/:keyword" element={<Index />} exact="true" />

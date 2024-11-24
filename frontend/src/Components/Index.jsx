@@ -9,6 +9,7 @@ import 'rc-slider/assets/index.css';
 import Loader from './Layout/Loader';
 import Categories from "./Layout/Filters";
 import { Box } from '@mui/material';
+import Search from './Layout/Search'; // Correct import
 
 const Index = () => {
     const [loading, setLoading] = useState(true);
@@ -64,9 +65,10 @@ const Index = () => {
             {loading ? (
                 <Loader />
             ) : (
-                <Box sx={{ display: 'flex', backgroundColor: '#B9D4F1'  }}>
+                <Box sx={{ display: 'flex', backgroundColor: '#B9D4F1' }}>
                     <Categories onSelectCategory={handleSelectCategory} />
                     <Box sx={{ flexGrow: 1, padding: 2 }}>
+                        <Search />
                         <div className="container container-fluid">
                             <h1 id="products_heading">Best Sellers</h1>
                             <section className="py-5">

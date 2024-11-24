@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Drawer, List, ListItem, ListItemText, Button, Typography, Card, CardMedia, CardContent, TextField } from "@mui/material";
-import {auth} from "../../firebaseConfig";
-import { onAuthStateChanged } from "firebase/auth";
-
 
 const Profile = () => {
   const [profile, setProfile] = useState({
@@ -15,36 +12,75 @@ const Profile = () => {
   });
 
   useEffect(() => {
+    // const fetchProfile = async () => {
+    //   try {
+    //     const response = await fetch('http://localhost:4001/api/v1/profile', {
+    //       method: 'GET',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //         'Authorization': `Bearer ${localStorage.getItem('token')}`
+    //       }
+    //     });
+
+    //     if (!response.ok) {
+    //       throw new Error(`HTTP error! status: ${response.status}`);
+    //     }
+
+    //     const data = await response.json();
+    //     if (data.success) {
+    //       setProfile({
+    //         name: data.user.name,
+    //         email: data.user.email,
+    //         phone: data.user.phone,
+    //         address: data.user.address,
+    //         avatar: data.user.avatar,
+    //         password: "" // Do not set the password
+    //       });
+    //     } else {
+    //       alert("Failed to fetch profile.");
+    //     }
+    //   } catch (error) {
+    //     console.error("Error fetching profile:", error);
+    //     alert("Failed to fetch profile.");
+    //   }
+    // };
+
+    // fetchProfile();
     const fetchProfile = async () => {
       try {
-        const response = await fetch('/api/v1/profile', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-
-        const data = await response.json();
-        if (data.success) {
-          setProfile({
-            name: data.user.name,
-            email: data.user.email,
-            phone: data.user.phone,
-            address: data.user.address,
-            avatar: data.user.avatar,
-            password: "" // Do not set the password
+          const response = await fetch('http://localhost:4001/api/v1/profile', {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              },
           });
-        } else {
-          alert("Failed to fetch profile.");
-        }
+  
+          if (!response.ok) {
+              const errorData = await response.json();
+              console.error('Failed to fetch profile:', errorData.message);
+              throw new Error(`HTTP error! status: ${response.status}`);
+          }
+  
+          const data = await response.json();
+          if (data.success) {
+              setProfile({
+                  name: data.user.name,
+                  email: data.user.email,
+                  phone: data.user.phone,
+                  address: data.user.address,
+                  avatar: data.user.avatar.url,
+              });
+          } else {
+              console.error('Error fetching profile:', data.message);
+              alert("Failed to fetch profile.");
+          }
       } catch (error) {
-        console.error("Error fetching profile:", error);
-        alert("Failed to fetch profile.");
+          console.error("Error fetching profile:", error);
+          alert("Failed to fetch profile.");
       }
-    };
-
-    fetchProfile();
+  };
+  fetchProfile();  
   }, []);
 
   const handleChange = (e) => {
@@ -58,7 +94,7 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/v1/profile/update', {
+      const response = await fetch('http://localhost:4001/api/v1/profile/update', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -66,6 +102,10 @@ const Profile = () => {
         },
         body: JSON.stringify(profile)
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
       const data = await response.json();
       if (data.success) {
@@ -109,10 +149,10 @@ const Profile = () => {
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
           <Typography variant="h4" fontWeight="bold">
-            Justine, Ben, and Ava
+            {profile.name}
           </Typography>
           <Button variant="contained" color="primary">
-            Hi, Justine
+            Hi, {profile.name}
           </Button>
         </div>
         <Typography variant="subtitle1" color="textSecondary">

@@ -1,25 +1,14 @@
-import React, { useState } from 'react';
-import { AppBar, Toolbar, Typography, IconButton, Button, Box, Badge, TextField, InputAdornment } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { AppBar, Toolbar, Typography, IconButton, Button, Box, Badge, Menu, MenuItem, InputAdornment, TextField } from '@mui/material';
+import { Link } from 'react-router-dom';
 import LoginIcon from '@mui/icons-material/Login';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
 import shoelala from '../../img/shoelala.png';
 import Search from './Search';
 
 const Header = ({ cartItems }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const navigate = useNavigate();
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search/${searchQuery}`);
-    } else {
-      navigate('/');
-    }
-  };
-
   return (
     <AppBar position="static" sx={{ backgroundColor: '#21273D', color: '#fff' }}>
       <Toolbar>
@@ -52,14 +41,47 @@ const Header = ({ cartItems }) => {
         </Box>
         {/* Buttons */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-          <Link to="/login" style={{ textDecoration: 'none', color: '#fff' }}>
-            <Button color="inherit" startIcon={<LoginIcon />}>
-              Login
-            </Button>
-          </Link>
-          <Link to="/cart" style={{ textDecoration: 'none', color: '#fff' }}>
-            <IconButton color="inherit">
-              <Badge badgeContent={cartItems.length} color="secondary">
+         
+        {user ? (
+            <>
+              <Typography variant="h6" sx={{ color: '#83B4FF' }}>
+                Hi! {user.name}
+              </Typography>
+              <IconButton color="inherit" onClick={handleMenuOpen}>
+                <AccountCircleIcon sx={{ color: '#83B4FF' }} />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+              >
+                <MenuItem onClick={() => { navigate('/profile'); handleMenuClose(); }}>Profile</MenuItem>
+                <MenuItem onClick={() => { navigate('/orders/me'); handleMenuClose(); }}>My Orders</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </Menu>
+            </>
+          ) : (
+            <Link to="/login" style={{ textDecoration: 'none' }}>
+              <Button
+                variant="outlined"
+                startIcon={<LoginIcon />}
+                sx={{
+                  color: '#fff',
+                  borderColor: '#fff',
+                  '&:hover': {
+                    borderColor: '#83B4FF',
+                    color: '#83B4FF',
+                  },
+                }}
+              >
+                Login
+              </Button>
+            </Link>
+          )}
+          
+          <Link to="/cart" style={{ textDecoration: 'none' }}>
+            <IconButton color="inherit" sx={{ color: '#83B4FF' }}>
+              <Badge badgeContent={cartItems.length} sx={{ '& .MuiBadge-badge': { backgroundColor: '#FDFFE2', color: '#000' } }}>
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
