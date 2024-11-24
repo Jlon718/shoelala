@@ -1,14 +1,31 @@
 import React, { useState } from 'react';
-import { AppBar, Toolbar, Typography, IconButton, Button, Box, Badge, Menu, MenuItem, InputAdornment, TextField } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { AppBar, Toolbar, Typography, IconButton, Button, Box, Badge, Menu, MenuItem } from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
 import LoginIcon from '@mui/icons-material/Login';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import SearchIcon from '@mui/icons-material/Search';
 import shoelala from '../../img/shoelala.png';
 import Search from './Search';
 
 const Header = ({ cartItems }) => {
+  const user = JSON.parse(localStorage.getItem('user')); 
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/login');
+    handleMenuClose();
+  };
+
   return (
     <AppBar position="static" sx={{ backgroundColor: '#21273D', color: '#fff' }}>
       <Toolbar>
@@ -18,31 +35,10 @@ const Header = ({ cartItems }) => {
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
           Shoelala
         </Typography>
-        {/* Search Bar */}
-        <Search />
-        <Box component="form" onSubmit={handleSearch} sx={{ flexGrow: 1, mx: 2 }}>
-          <TextField
-            variant="outlined"
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            fullWidth
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton type="submit" color="inherit">
-                    <SearchIcon />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            sx={{ backgroundColor: '#fff', borderRadius: '4px' }}
-          />
-        </Box>
         {/* Buttons */}
+        <Search />
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-         
-        {user ? (
+          {user ? (
             <>
               <Typography variant="h6" sx={{ color: '#83B4FF' }}>
                 Hi! {user.name}
@@ -78,7 +74,6 @@ const Header = ({ cartItems }) => {
               </Button>
             </Link>
           )}
-
           <Link to="/cart" style={{ textDecoration: 'none' }}>
             <IconButton color="inherit" sx={{ color: '#83B4FF' }}>
               <Badge badgeContent={cartItems.length} sx={{ '& .MuiBadge-badge': { backgroundColor: '#FDFFE2', color: '#000' } }}>
