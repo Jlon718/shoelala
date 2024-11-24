@@ -22,7 +22,7 @@ exports.newOrder = async (req, res, next) => {
         totalPrice,
         paymentInfo,
         paidAt: Date.now(),
-        user: req.user.id
+        user: req.user._id
     })
     const productList = orderItems.map(item => `${item.name} - ${item.quantity} x ₱${item.price}`).join('\n');
         const message = `
