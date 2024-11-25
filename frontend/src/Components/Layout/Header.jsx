@@ -8,6 +8,7 @@ import shoelala from '../../img/shoelala.png';
 import Search from './Search';
 
 const Header = ({ cartItems }) => {
+  const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user')); 
   const [anchorEl, setAnchorEl] = useState(null);
 

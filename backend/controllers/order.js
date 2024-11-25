@@ -1,6 +1,8 @@
 const Order = require('../models/order');
 const Product = require('../models/product');
+const User = require('../models/user');
 const sendEmail = require('../utils/sendEmail');
+const sendNotification = require('./notification.service.js');
 
 exports.newOrder = async (req, res, next) => {
     const {
@@ -210,16 +212,22 @@ exports.updateOrder = async (req, res, next) => {
             message: 'You have already delivered this order',
         })
     }
+    const user = await User.findById(order.user)
+    if (user.fcmToken) {
+        await sendNotification({ deviceToken: user.fcmToken, title: 'Order Delivered', body: 'Your order has been delivered' });
+      }
     order.orderItems.forEach(async item => {
         await updateStock(item.product, item.quantity)
     })
     order.orderStatus = req.body.status
     order.deliveredAt = Date.now()
     await order.save()
+
     return res.status(200).json({
         success: true,
     })
 }
+
 async function updateStock(id, quantity) {
     const product = await Product.findById(id);
     if (!product) {

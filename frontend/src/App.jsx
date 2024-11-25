@@ -30,9 +30,22 @@ import ListOrders from './Components/Order/ListOrders';
 import ReviewProduct from './Components/Review/ReviewProduct';
 import ProductReviews from './Components/Admin/ProcessReview';
 import Profile from './Components/User/Profile';
+import useNotification from './utils/useNotification';
 
 
 function App() {
+  useNotification();
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+        .register('/firebase-messaging-sw.js')
+        .then((registration) => {
+            console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch((error) => {
+            console.error('Service Worker registration failed:', error);
+        });
+}
+
   const [state, setState] = useState({
     cartItems: localStorage.getItem('cartItems')
       ? JSON.parse(localStorage.getItem('cartItems'))

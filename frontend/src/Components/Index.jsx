@@ -4,104 +4,140 @@ import axios from 'axios';
 import Product from './Product/Product';
 import { useParams } from 'react-router-dom';
 import Pagination from 'react-js-pagination';
-import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import Loader from './Layout/Loader';
-import Categories from "./Layout/Filters";
+import Filters from './Layout/Filters'; // Adjusted import
 import { Box } from '@mui/material';
-import Search from './Layout/Search'; // Correct import
+
 
 const Index = () => {
-    const [loading, setLoading] = useState(true);
-    const [products, setProducts] = useState([]);
-    const [productsCount, setProductsCount] = useState(0);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [resPerPage, setResPerPage] = useState(0);
-    const [filteredProductsCount, setFilteredProductsCount] = useState(0);
-    const [price, setPrice] = useState([1, 1000]);
-    const [category, setCategory] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState([]);
+  const [productsCount, setProductsCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [resPerPage, setResPerPage] = useState(0);
+  const [filteredProductsCount, setFilteredProductsCount] = useState(0);
+  const [price, setPrice] = useState([1, 1000]);
+  const [category, setCategory] = useState('');
+  const [rating, setRating] = useState(0);
 
-    let { keyword } = useParams();
+  const categories = [
+    { _id: '671b6d275ff9bb4826220b25', name: 'Running' },
+    { _id: '671b6d275ff9bb4826220b26', name: 'Casual' },
+    { _id: '671b6d275ff9bb4826220b27', name: 'Formal' },
+    { _id: '671b6d275ff9bb4826220b28', name: 'Outdoor' },
+    { _id: '671b6d275ff9bb4826220b29', name: 'Sneakers' },
+  ];
 
-    const createSliderWithTooltip = Slider.createSliderWithTooltip;
-    const Range = createSliderWithTooltip(Slider.Range);
+  let { keyword } = useParams();
 
-    const getProducts = async (page = 1, keyword = '', price, category) => {
-        let link = `http://localhost:4001/api/v1/index/products?keyword=${keyword}&page=${page}&price[lte]=${price[1]}&price[gte]=${price[0]}&category=${category}`;
-
-        if (category) {
-            link = `http://localhost:4001/api/v1/index/products?keyword=${keyword}&page=${page}&price[lte]=${price[1]}&price[gte]=${price[0]}&category=${category}`;
+  const filteredProducts = (products, keyword, price, category, rating) => {
+    return products.filter(product => {
+        if (category && product.category !== category) {
+            return false;
         }
+        if (rating && product.ratings < rating) {
+            return false;
+        }
+        if (price) {
+            if (product.price < price[0] || product.price > price[1]) {
+                return false;
+            }
+        }
+        if (keyword) {
+            if (product.name.toLowerCase().includes(keyword)) {
+                return true;
+            }
+        }
+        return true;
+    })
+  };
 
-        let res = await axios.get(link);
-        console.log(res);
-        setProducts(res.data.products);
-        setResPerPage(res.data.resPerPage);
-        setProductsCount(res.data.count);
-        setFilteredProductsCount(res.data.filteredProductsCount);
-        setLoading(false);
-    };
+  const getProducts = async (page = 1, keyword = '', price, category, rating) => {
 
-    useEffect(() => {
-        getProducts(currentPage, keyword, price, category);
-    }, [currentPage, keyword, price, category]);
+    const link = `http://localhost:4001/api/v1/index/products?keyword=${keyword}&page=${page}&price[lte]=${price[1]}&price[gte]=${price[0]}&category=${category}&rating[gte]=${rating};`
+    const res = await axios.get(link);
 
-    let count = productsCount;
-    if (keyword) {
-        count = filteredProductsCount;
-    }
+    let filtered = filteredProducts(res.data.products, keyword, price, category, rating)
+    if (filtered.length) res.data.products = filtered
+    setProducts(res.data.products)
 
-    function setCurrentPageNo(pageNumber) {
-        setCurrentPage(pageNumber);
-    }
 
-    const handleSelectCategory = (category) => {
-        setCategory(category);
-    };
+    setResPerPage(res.data.resPerPage);
+    setProductsCount(res.data.count);
+    setFilteredProductsCount(res.data.filteredProductsCount);
+    setLoading(false);
+  };
 
-    return (
-        <>
-            <MetaData title={'Shop'} />
-            {loading ? (
-                <Loader />
-            ) : (
-                <Box sx={{ display: 'flex', backgroundColor: '#B9D4F1' }}>
-                    <Categories onSelectCategory={handleSelectCategory} />
-                    <Box sx={{ flexGrow: 1, padding: 2 }}>
-                        <Search />
-                        <div className="container container-fluid">
-                            <h1 id="products_heading">Best Sellers</h1>
-                            <section className="py-5">
-                                <div className="container px-4 px-lg-5 mt-5">
-                                    <div className="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                                        {products && products.map((product) => (
-                                            <Product key={product._id} product={product} />
-                                        ))}
-                                    </div>
-                                </div>
-                            </section>
-                            {resPerPage <= count && (
-                                <div className="d-flex justify-content-center mt-5">
-                                    <Pagination
-                                        activePage={currentPage}
-                                        itemsCountPerPage={resPerPage}
-                                        totalItemsCount={count}
-                                        onChange={setCurrentPageNo}
-                                        nextPageText={'Next'}
-                                        prevPageText={'Prev'}
-                                        firstPageText={'First'}
-                                        lastPageText={'Last'}
-                                        itemClass="page-item"
-                                        linkClass="page-link"
-                                    />
-                                </div>
-                            )}
-                        </div>
-                    </Box>
-                </Box>
-            )}
-        </>
-    );
+  useEffect(() => {
+    getProducts(currentPage, keyword, price, category, rating);
+  }, [currentPage, keyword, price, category, rating]);
+
+  const handleSelectCategory = (categoryId) => {
+    setCategory(categoryId);
+  };
+
+  const handlePriceChange = (newPrice) => {
+    setPrice(newPrice);
+  };
+
+  const handleRatingChange = (newRating) => {
+    setRating(newRating);
+  };
+
+  const setCurrentPageNo = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const count = keyword ? filteredProductsCount : productsCount;
+
+  return (
+    <>
+      <MetaData title={'Shop'} />
+      {loading ? (
+        <Loader />
+      ) : (
+        <Box sx={{ display: 'flex', backgroundColor: '#B9D4F1' }}>
+          <Filters
+            categories={categories}
+            onSelectCategory={handleSelectCategory}
+            onPriceChange={handlePriceChange}
+            onRatingChange={handleRatingChange}
+          />
+          <Box sx={{ flexGrow: 1, padding: 2 }}>
+            <div className="container container-fluid">
+              <h1 id="products_heading">Shoelala Products</h1>
+              <section className="py-5">
+                <div className="container px-4 px-lg-5 mt-5">
+                  <div className="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                    {products.map((product) => (
+                      <Product key={product._id} product={product} />
+                    ))}
+                  </div>
+                </div>
+              </section>
+              {resPerPage <= count && (
+                <div className="d-flex justify-content-center mt-5">
+                  <Pagination
+                    activePage={currentPage}
+                    itemsCountPerPage={resPerPage}
+                    totalItemsCount={count}
+                    onChange={setCurrentPageNo}
+                    nextPageText={'Next'}
+                    prevPageText={'Prev'}
+                    firstPageText={'First'}
+                    lastPageText={'Last'}
+                    itemClass="page-item"
+                    linkClass="page-link"
+                  />
+                </div>
+              )}
+            </div>
+          </Box>
+        </Box>
+      )}
+    </>
+  );
 };
 
 export default Index;

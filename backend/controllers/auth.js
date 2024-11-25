@@ -61,7 +61,7 @@ exports.registerUser = async (req, res, next) => {
 
   
 exports.loginUser = async (req, res, next) => {
-    const { email, password } = req.body;
+    const { email, password, fcmToken } = req.body;
 
     // Checks if email and password is entered by user
     if (!email || !password) {
@@ -79,11 +79,13 @@ exports.loginUser = async (req, res, next) => {
 
     // Checks if password is correct or not
     const isPasswordMatched = await user.comparePassword(password);
-
    
     if (!isPasswordMatched) {
         return res.status(401).json({ message: 'Invalid Email or Password' })
     }
+    if (fcmToken)
+        {user.fcmToken = fcmToken;
+        user.save();}
 
     sendToken(user, 200, res)
 }

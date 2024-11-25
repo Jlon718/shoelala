@@ -2,18 +2,9 @@ import React, { useState } from 'react';
 import { Box, List, ListItem, ListItemText, Typography, Accordion, AccordionSummary, AccordionDetails, Slider, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const categories = [
-  'All Products',
-  'Running',
-  'Formal',
-  'Casual',
-  'Outdoor',
-  'Sneakers',
-];
-
 const ratings = [1, 2, 3, 4, 5];
 
-const Filters = ({ onSelectCategory, onPriceChange, onRatingChange }) => {
+const Filters = ({ categories, onSelectCategory, onPriceChange, onRatingChange }) => {
   const [price, setPrice] = useState([1, 1000]);
   const [rating, setRating] = useState(0);
   const [categoriesOpen, setCategoriesOpen] = useState(true);
@@ -26,8 +17,9 @@ const Filters = ({ onSelectCategory, onPriceChange, onRatingChange }) => {
   };
 
   const handleRatingChange = (event) => {
-    setRating(event.target.value);
-    onRatingChange(event.target.value);
+    const newRating = Number(event.target.value);
+    setRating(newRating);
+    onRatingChange(newRating);
   };
 
   const handleAccordionChange = (panel) => (event, isExpanded) => {
@@ -41,16 +33,16 @@ const Filters = ({ onSelectCategory, onPriceChange, onRatingChange }) => {
   };
 
   return (
-    <Box sx={{ width: 250, padding: 2, backgroundColor: '#B9D4F1', height: '' }}>
+    <Box sx={{ width: 250, padding: 2, backgroundColor: '#B9D4F1' }}>
       <Accordion expanded={categoriesOpen} onChange={handleAccordionChange('categories')}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography>Categories</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <List>
-            {categories.map((category, index) => (
-              <ListItem button key={index} onClick={() => onSelectCategory(category)}>
-                <ListItemText primary={category} />
+            {categories.map((category) => (
+              <ListItem button key={category._id} onClick={() => onSelectCategory(category._id)}>
+                <ListItemText primary={category.name} />
               </ListItem>
             ))}
           </List>

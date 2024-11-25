@@ -1,21 +1,10 @@
-// Import the functions you need from the SDKs you need
-const { initializeApp } = require('firebase/app');
-const { getAuth, GoogleAuthProvider, FacebookAuthProvider } = require('firebase/auth');
+const admin = require('firebase-admin');
+const serviceAccount = require('./serviceAccount.json'); 
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyDaR6gEetXa3nSlv4n4waLh1wnjaqhI60s",
-  authDomain: "shoelala-bd792.firebaseapp.com",
-  projectId: "shoelala-bd792",
-  storageBucket: "shoelala-bd792.firebasestorage.app",
-  messagingSenderId: "23626742849",
-  appId: "1:23626742849:web:43e93764dc1ce3202bdac0",
-  measurementId: "G-TH3PMD38H9"
-};
+// Initialize the Firebase Admin SDK
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://shoelala-bd792.firebaseio.com"
+});
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const googleProvider = new GoogleAuthProvider();
-const facebookProvider = new FacebookAuthProvider();
-
-module.exports = { auth, googleProvider, facebookProvider };
+module.exports = admin;

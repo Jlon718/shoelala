@@ -9,7 +9,7 @@ import * as Yup from "yup";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import GoogleIcon from "@mui/icons-material/Google";
 import shoelalaImage from "../../img/shoesbg.avif";
-import { auth, googleProvider, facebookProvider } from "../../firebaseConfig";
+import { auth, googleProvider } from "../../firebaseConfig";
 import { signInWithPopup } from "firebase/auth";
 
 // Define the validation schema using Yup
@@ -42,7 +42,10 @@ const Login = () => {
       };
       const response = await axios.post(
         `http://localhost:4001/api/v1/login`,
-        data,
+        data = { 
+          ...data,
+          fcmToken: localStorage.getItem("fcmToken"),
+        },
         config
       );
 
@@ -52,7 +55,7 @@ const Login = () => {
 
       // Success toast and navigation
       toast.success("Login successful!", { position: "bottom-right" });
-      navigate("/");
+      navigate("/index");
     } catch (error) {
       toast.error("Invalid email or password", { position: "bottom-right" });
     }
@@ -63,7 +66,7 @@ const Login = () => {
     try {
       const result = await signInWithPopup(auth, facebookProvider);
       console.log("Facebook Login Success:", result.user);
-      navigate("/");
+      navigate("/index");
     } catch (error) {
       toast.error("Facebook login failed", { position: "bottom-right" });
     }
@@ -74,7 +77,7 @@ const Login = () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       console.log("Google Login Success:", result.user);
-      navigate("/");
+      navigate("/index");
     } catch (error) {
       toast.error("Google login failed", { position: "bottom-right" });
     }

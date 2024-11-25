@@ -5,6 +5,7 @@ import { getAuth, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup } fr
 const firebaseConfig = {
     apiKey: "AIzaSyDaR6gEetXa3nSlv4n4waLh1wnjaqhI60s",
     authDomain: "shoelala-bd792.firebaseapp.com",
+    databaseURL: "https://shoelala-bd792.firebaseio.com",
     projectId: "shoelala-bd792",
     storageBucket: "shoelala-bd792.firebasestorage.app",
     messagingSenderId: "23626742849",
@@ -12,16 +13,13 @@ const firebaseConfig = {
     measurementId: "G-TH3PMD38H9"
 };
 
-const app = initializeApp(firebaseConfig);
-const messaging = getMessaging(app);
-const auth = getAuth(app);
-const googleProvider = new GoogleAuthProvider();
-const facebookProvider = new FacebookAuthProvider();
+export const app = initializeApp(firebaseConfig);
+export const messaging = getMessaging(app);
+export const auth = getAuth(app);
+export const googleProvider = new GoogleAuthProvider();
 
-export { auth, googleProvider, facebookProvider };
-
-export const requestForToken = (setTokenFound) => {
-  return getToken(messaging, { vapidKey: 'YOUR_VAPID_KEY' }).then((currentToken) => {
+export const requestForToken = async (setTokenFound) => {
+  return getToken(messaging, { vapidKey: `BP4HNr__KmCMEXlaArrrMV51A6S1rgBsgtTrDZWl3176mI-9JPUTvaN4wGszpHp4TeIFfcO8Tv4lNpm8JEC30zs` }).then((currentToken) => {
     if (currentToken) {
       console.log('current token for client: ', currentToken);
       setTokenFound(true);
@@ -33,6 +31,21 @@ export const requestForToken = (setTokenFound) => {
   }).catch((err) => {
     console.log('An error occurred while retrieving token. ', err);
     setTokenFound(false);
+  });
+};
+
+export const requestFCMToken = async () => {
+  return Notification.requestPermission().then((notif)=> {
+    if (notif === 'granted') {
+      return getToken(messaging, {vapidKey: `BP4HNr__KmCMEXlaArrrMV51A6S1rgBsgtTrDZWl3176mI-9JPUTvaN4wGszpHp4TeIFfcO8Tv4lNpm8JEC30zs`
+      }).then((token) => {
+        return token
+      });
+    } else {
+      throw new Error("Permission denied");
+    }
+  }).catch((err) => {
+    console.log("Error getting FCM token: ", err);
   });
 };
 

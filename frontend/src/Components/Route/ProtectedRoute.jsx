@@ -25,7 +25,7 @@ const ProtectedRoute = ({ children, isAdmin = false }) => {
         return <Navigate to='/login' />;
     }
 
-    if (isAdmin && user.role !== 'admin') {
+    if (user.role !== 'admin') {
         console.log('User is not an admin:', user); // Debugging log
         return <Navigate to='/' />;
     }
