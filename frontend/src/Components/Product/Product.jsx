@@ -6,16 +6,19 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import shoesImage from './shoes.png';
 
 const Product = ({ product }) => {
+  const cloudName = 'dop23iret'; // Replace with your Cloudinary cloud name
+  const firstImagePublicId = product.images && product.images.length > 0 ? product.images[0].public_id : '';
+  const firstImageUrl = firstImagePublicId ? `https://res.cloudinary.com/${cloudName}/image/upload/${firstImagePublicId}` : '';
   return (
     <Card sx={{ maxWidth: 250, margin: '15px' }}>
   <CardMedia
-    sx={{ height: 250 }}
-    image={shoesImage}
-    title="shoes"
-  />
+                    component="img"
+                    height="140"
+                    image={firstImageUrl}
+                    alt={product.name}
+                />
       <CardContent>
         <Typography gutterBottom variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
           {product.name}

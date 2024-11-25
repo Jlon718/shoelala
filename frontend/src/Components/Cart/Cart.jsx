@@ -4,6 +4,7 @@ import MetaData from '../Layout/MetaData';
 import { useNavigate } from 'react-router-dom';
 
 const Cart = ({ cartItems, addItemToCart, removeItemFromCart }) => {
+  const cloudName = 'dop23iret'; 
   const navigate = useNavigate();
 
   const increaseQty = (id, quantity, stock) => {
@@ -43,6 +44,7 @@ const Cart = ({ cartItems, addItemToCart, removeItemFromCart }) => {
             {/* Cart Items */}
             <div style={{ flex: 2, background: '#fff', padding: '20px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
               {cartItems.map((item) => (
+                
                 <div
                   key={item.product}
                   style={{

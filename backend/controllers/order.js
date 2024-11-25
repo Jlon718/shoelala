@@ -24,6 +24,15 @@ exports.newOrder = async (req, res, next) => {
         paidAt: Date.now(),
         user: req.user._id
     })
+
+    for (const item of orderItems) {
+        const product = await Product.findById(item.product);
+        if (product) {
+            product.stock -= item.quantity;
+            await product.save();
+        }
+    }
+
     const productList = orderItems.map(item => `${item.name} - ${item.quantity} x ₱${item.price}`).join('\n');
         const message = `
             Hi ${req.user.name},

@@ -89,14 +89,13 @@ const ProductDetails = ({ cartItems, addItemToCart }) => {
     <div style={styles.pageBackground}>
       <MetaData title={product.name} />
       <div style={styles.container}>
-        <div style={styles.imageSection}>
-          <Carousel>
-            {product.images &&
-              product.images.map((image) => (
-                <Carousel.Item key={image.public_id}>
-                  <img src={image.url} alt={product.title} style={styles.productImage} />
-                </Carousel.Item>
-              ))}
+      <div style={styles.imageSection}>
+          <Carousel showThumbs={false} infiniteLoop useKeyboardArrows autoPlay>
+            {product.images && product.images.map((image) => (
+              <div key={image.public_id} style={styles.carouselImageContainer}>
+                <img src={`https://res.cloudinary.com/dop23iret/image/upload/${image.public_id}`} alt={product.name} style={styles.carouselImage} />
+              </div>
+            ))}
           </Carousel>
         </div>
         <div style={styles.detailsSection}>
@@ -160,6 +159,23 @@ const styles = {
     padding: '20px',
     minHeight: '100vh',
   },
+
+  carouselImageContainer: {
+    display: 'flex',
+    justifycontent: 'center',
+    alignitems: 'center',
+    height: '100%', /* Match parent container height */
+    width: '100%',/* Match parent container width */
+    overflow: 'hidden', /* Prevent overflow of images */
+  },
+  
+  carouselImage: {
+    maxWidth: '100%',
+    maxHeight: '100%',
+    objectFit: 'contain', // Ensure the image maintains its aspect ratio
+  },
+
+
   container: {
     display: 'flex',
     justifyContent: 'space-around',
@@ -173,7 +189,7 @@ const styles = {
   },
   imageSection: {
     flex: '1 1 45%',
-    marginRight: '20px',
+    maxWidth: '45%',
   },
   productImage: {
     width: '100%',
@@ -181,19 +197,20 @@ const styles = {
     objectFit: 'cover',
   },
   detailsSection: {
-    flex: '1 1 45%',
+    flex: '1 1 50%',
+    maxWidth: '50%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
   },
   productName: {
-    fontSize: '24px',
+    fontSize: '2rem',
     fontWeight: 'bold',
     color: '#333',
     marginBottom: '10px',
   },
   productId: {
-    fontSize: '14px',
+    fontSize: '1rem',
     color: '#777',
     marginBottom: '20px',
   },
@@ -213,9 +230,9 @@ const styles = {
     marginLeft: '10px',
   },
   productPrice: {
-    fontSize: '20px',
+    fontSize: '1.5rem',
     fontWeight: 'bold',
-    color: '#007BFF',
+    color: '#333',
     marginBottom: '20px',
   },
   quantityContainer: {
@@ -307,9 +324,22 @@ const styles = {
     color: '#FFD700',
     marginBottom: '5px',
   },
+  ratingOuter: {
+    position: 'relative',
+    display: 'inline-block',
+    width: '100px',
+    height: '20px',
+    backgroundColor: '#ccc',
+    marginRight: '10px',
+  },
   reviewComment: {
     fontSize: '14px',
     color: '#555',
+  },
+  ratings: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '20px',
   },
 };
 
