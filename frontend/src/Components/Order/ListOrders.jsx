@@ -135,7 +135,7 @@ const ListOrders = () => {
                 )}
 
                 <br />
-                <h1 className="my-5" style={{ color: '#21273D' }}>Products to be Reviewed:</h1>
+                {/* <h1 className="my-5" style={{ color: '#21273D' }}>Products to be Reviewed:</h1>
                 {loading ? <Loader /> : (
                     <MDBDataTable
                         data={setOrders(getOrdersToBeReviewed())}
@@ -157,7 +157,7 @@ const ListOrders = () => {
                         hover
                         style={{ backgroundColor: '#B9D4F1', borderRadius: '8px' }}
                     />
-                )}
+                )} */}
             </div>
         </>
     )
